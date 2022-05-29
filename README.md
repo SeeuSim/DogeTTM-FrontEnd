@@ -36,6 +36,7 @@ Search Bar:
 The webapp uses both AJAX and server-rendered HTML to communicate frontend(client webapp) to Django backend (dashboard).
 
 Price Prediction Model: 
+We use simple linear regression algorithm under supervised learning to train our price prediction model, with sentiment scores over time and price over time as our parameters.
 
 ## CLI Commands
 *   `npm install`: Installs dependencies
