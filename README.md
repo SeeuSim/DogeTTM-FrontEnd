@@ -16,8 +16,8 @@ DogeTTM is a webapp that uses social media sentiment analysis to provide NFT inv
 Note: NFT studio refers to the brand/creator of NFT tokens, an example of which would be the Bored Apt Yacht Club.
 
 ## Tech Stack
-Front-End - Typescript with Preact <br />
-Back-End - Django, Moralis
+Front-End - Typescript with Preact, Tailwind/Material CSS <br />
+Back-End - Django, Moralis, TensorFlow, Heroku
 
 ## Problem and Solution
 NFT prices are very volatile and unpredictable, and a large proportion of price movements are determined by sentiment shifts (online hype) rather than fundamental analysis such as in stocks. Unlike well-established online stock price platforms, current NFT price platforms do not provide users with useful insights into price trends other than basic price movements  (such as real-time social media sentiment analysis or celebrity tweets). 
