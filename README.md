@@ -11,7 +11,7 @@ Ong Seeu Sim
 DogeTTM is a webapp that uses social media sentiment analysis to provide NFT investors with price insights on their NFT studio/token, through 3 main features:
 1. Dashboard showing top 5 performing NFTs of the week (filterable by percentage price change, absolute price change and volume)
 2. Search bar displaying information and performance of a specific NFT token/studio.
-3. Historical predition accuracy rate for each NFT studio. 
+3. Historical predition accuracy rate for each NFT studio.
 
 Note: NFT studio refers to the brand/creator of NFT tokens, an example of which would be the Bored Apt Yacht Club.
 
@@ -20,7 +20,7 @@ Front-End - Typescript with Preact, Tailwind/Material CSS <br />
 Back-End - Django, Moralis, TensorFlow, Heroku
 
 ## Problem and Solution
-NFT prices are very volatile and unpredictable, and a large proportion of price movements are determined by sentiment shifts (online hype) rather than fundamental analysis such as in stocks. Unlike well-established online stock price platforms, current NFT price platforms do not provide users with useful insights into price trends other than basic price movements  (such as real-time social media sentiment analysis or celebrity tweets). 
+NFT prices are very volatile and unpredictable, and a large proportion of price movements are determined by sentiment shifts (online hype) rather than fundamental analysis such as in stocks. Unlike well-established online stock price platforms, current NFT price platforms do not provide users with useful insights into price trends other than basic price movements  (such as real-time social media sentiment analysis or celebrity tweets).
 
 We aim to scrap data on discussions and mentions of NFT tokens/studios on social media channels (with the most prominent ones being Twitter and Discord), and assign each NFT studio with a sentiment score which will be displayed on the dashboard.
 
@@ -28,30 +28,12 @@ This way, investors will be better-equipped to make NFT investments since they c
 
 ## Features Explanation
 Dashboard:
-Using a Django backend, our app will scrap data on social media platforms Twitter and Reddit and categorise tweets based on NFT collections and assign a sentiment score. Top rated NFTs will be pushed to the top of the dashboard, allowing investors to catch opportunities as soon as they sizzle. 
+Using a Django backend, our app will scrap data on social media platforms Twitter and Reddit and categorise tweets based on NFT collections and assign a sentiment score. Top rated NFTs will be pushed to the top of the dashboard, allowing investors to catch opportunities as soon as they sizzle.
 
 The front-end dashboard components will be created using Typescript and Preact.
 
 Search Bar:
 The webapp uses both AJAX and server-rendered HTML to communicate frontend(client webapp) to Django backend (dashboard).
 
-Price Prediction Model: 
+Price Prediction Model:
 We use simple linear regression algorithm under supervised learning to train our price prediction model, with sentiment scores over time and price over time as our parameters.
-
-## CLI Commands
-*   `npm install`: Installs dependencies
-
-*   `npm run dev`: Run a development, HMR server
-
-*   `npm run serve`: Run a production-like server
-
-*   `npm run build`: Production-ready build
-
-*   `npm run lint`: Pass TypeScript files using ESLint
-
-*   `npm run test`: Run Jest and Enzyme with
-    [`enzyme-adapter-preact-pure`](https://github.com/preactjs/enzyme-adapter-preact-pure) for
-    your tests
-
-
-For detailed explanation on how things work, checkout the [CLI Readme](https://github.com/developit/preact-cli/blob/master/README.md).
