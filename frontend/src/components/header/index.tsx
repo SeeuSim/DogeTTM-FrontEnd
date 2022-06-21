@@ -5,7 +5,11 @@ import style from './style.css';
 const Header: FunctionalComponent = () => {
     return (
         <header class={style.header}>
-            <h1>Preact App</h1>
+            <a href ='/'>
+                <img src="../../assets/DogeTTM.png"/>
+                <h1>DogeTTM <sup>®</sup></h1>
+            </a>
+
             <nav>
                 <Link activeClassName={style.active} href="/">
                     Home
