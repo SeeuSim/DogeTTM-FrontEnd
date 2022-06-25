@@ -19,3 +19,9 @@
 	font-weight: 400;
 	color: rgb(0, 0, 0);
 }
+
+.home .main-container{
+	display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
