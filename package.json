@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@types/lodash": "^4.14.182"
+  },
+  "dependencies": {
+    "@types/react": "^18.0.14",
+    "preact": "^10.8.2"
+  }
+}
