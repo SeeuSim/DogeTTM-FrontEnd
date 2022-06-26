@@ -5,11 +5,12 @@ import style from './style.css';
 const Header: FunctionalComponent = () => {
     return (
         <header class={style.header}>
-            <a href ='/'>
-                <img src="../../assets/DogeTTM.png"/>
-                <h1>DogeTTM <sup>®</sup></h1>
+            <a href="/">
+                <h1>
+                    <img class={style.logo} src="../../assets/DogeTTM.png"></img>
+                    DogeTTM<sup>®</sup>
+                </h1>
             </a>
-
             <nav>
                 <Link activeClassName={style.active} href="/">
                     Home
