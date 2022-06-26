@@ -20,9 +20,10 @@ from dashboard import views
 # from dashboard import views
 
 urlpatterns = [
+    path("accounts/", include("django.contrib.auth.urls")),  # new
     path('admin/', admin.site.urls),
     # path('top/<param>', views.topSentiments, name= "topSentiments"),
     # path('top/<param>', views.singleCollection, name= "singleCollection")
-    path('toprank/<param>', views.topRank, name="topRank")
+    path('toprank/<min_price>', views.topRank, name="topRank")
 #path TBD
 ]
