@@ -7,7 +7,6 @@ import style from './style.css';
 const Home: FunctionalComponent = () => {
     return (
         <div class={style.home}>
-            <h1>Main Page</h1>
             <Searchbar />
             <div class={style.container}>
                 <div class="container-left">

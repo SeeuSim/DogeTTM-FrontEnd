@@ -32,7 +32,7 @@ def format_id(tokenID:int) -> str:
   return hexID.replace('x', '')
 
 def getart(address:str, tokens:int) -> str:
-  tokenid = random.randint(0, tokens)
+  tokenid = abs(tokens - random.randint(0, 100))
   hashed_id = format_id(tokenid)
   endpoint = f"https://api.rarify.tech/data/tokens/{address}:{hashed_id}"
 
@@ -40,8 +40,8 @@ def getart(address:str, tokens:int) -> str:
       "Authorization": f'Bearer {RARIFY_API_KEY}'
   }
   response = requests.get(endpoint, headers=headers).json()
-  if 'image_url' in response['data']['attributes']:
-    return response['data']['attributes']['image_url']
+  if 'data' in response and 'image_url' in response['data']['attributes']:
+      return response['data']['attributes']['image_url']
   return ""
 
 
@@ -115,30 +115,24 @@ def find_collections(name:str) -> dict or list:
     return response['data']
 
 
-def get_trending(limit:int, period:str) -> dict or list:
+def get_trending(limit:int, period:str) -> dict:
   endpoint = 'https://api.rarify.tech/data/contracts'
   headers = {
       "Authorization": f'Bearer {RARIFY_API_KEY}'
   }
   periods = {'24h', '3d', '7d', '30d', '90d'}
-  if period not in periods:
-    raise ValueError("Wrong time period selected. Choose from '24h', '3d', '7d', '30d', or '90d'")
-  if limit < 5:
-    limit = 5
 
   params = {
       'insights_trends.period': period,
       'include': 'insights_trends',
       'sort': '-insights_trends.volume_change_percent',
-      'page[limit]': limit
+      'page[limit]': limit,
+      'filter[has_metadata]': "true"
   }
   response = requests.get(endpoint, headers=headers, params=params).json()
-  #return response;
-  #return [x for x in zip(response['data'], response['included'])]
 
   tokens = response['data']
   stats = response['included']
-
   out = []
 
   for token, stat in zip(tokens, stats):
@@ -158,28 +152,44 @@ def get_trending(limit:int, period:str) -> dict or list:
         "percent_change": stat['attributes']['volume_change_percent']
     })
 
-  return {'data':out}
 
-def get_top(param:str, limit:int) -> dict or list:
-  if param not in {"min_price", 'max_price', 'volume'}:
-    raise ValueError("wrong param. Choose from 'min_price', 'max_price', or 'volume'")
-  if limit < 5:
-    limit = 5
+  return {'data':sorted(out, key=lambda x: Decimal(x['percent_change']), reverse=True)}
+
+def get_top(param:str, limit:int) -> dict:
+
   endpoint = 'https://api.rarify.tech/data/contracts'
   headers = {
       "Authorization": f'Bearer {RARIFY_API_KEY}'
   }
-  print(RARIFY_API_KEY)
-
   params = {
       'include': 'insights',
       'sort': f'-insights.{param}',
-      'page[limit]': limit
+      'page[limit]': limit,
+      'filter[has_metadata]': "true"
   }
-
   response = requests.get(endpoint, headers=headers, params=params).json()
+  tokens = response['data']
+  stats = response['included']
+  out = []
+  for token, stat in zip(tokens, stats):
+    tokens = token['attributes']['tokens']
+    id = token['id']
+    nm = ""
+    if 'name' in token['attributes']:
+      nm = token['attributes']['name']
+    out.append({
+        "imgurl": getart(id, tokens),
+        "address": f"0x{token['attributes']['address']}",
+        "name": nm,
+        "tokens": tokens,
+        "avg_price": format_price(stat['attributes']["avg_price"], stat['attributes']['payment_asset']['code']),
+        "max_price": format_price(stat['attributes']["max_price"], stat['attributes']['payment_asset']['code']),
+        "min_price": format_price(stat['attributes']["min_price"], stat['attributes']['payment_asset']['code']),
+        "volume": format_price(stat['attributes']["volume"], stat['attributes']['payment_asset']['code'])
+    })
+
   # return response
-  return {"data":[x for x in zip(response['data'], response['included'])]}
+  return {"data":sorted(out, key=lambda x: Decimal(x[param][:-4]), reverse=True)}
 
 def plotTop():
     temp = get_trending(10, '3d')
@@ -277,13 +287,3 @@ def viewIndividualNFTData(address):
 
 
 '''
-[{"imgurl": "https://daiakrtkievq7ofrm5xaoecjyjfmsybdd2nxxdm5ey74a4ku6ama.arweave.net/GBAFRmpBKw-4sWduBxBJwkrJYCMem3uNnSY_wHFU8Bg", "address": "0xd1d411d2da363144248b98adab453aa3b19ccf04", "name": "Rug Radio Membership Pass", "tokens": 20000, "unique_owners": 13689, "volume_change": "0.65451 ETH", "percent_change": 333933.7},
-{"imgurl": "http://ipfs-proxy.prod.svc.cluster.local/ipfs/QmcaVaNtWDLbsz9EMcb1pLshuzzdUbt9ehWzYq1BP9cPXP/3852.png", "address": "0xc70c411cfdbe542e8208af52092ca4f56b633977", "name": "devilvalley", "tokens": 6665, "unique_owners": 2185, "volume_change": "28.325592 ETH", "percent_change": 212654.6},
-{"imgurl": "http://ipfs-proxy.prod.svc.cluster.local/ipfs/QmbS7BhsiNMo3BCyw1LKKo7SgJidvU7ctj2VqDjhTbCJjb/blindbox.png", "address": "0x12073c130ee0612219a0b54e56582ce24155dfa8", "name": "HanfuNFT", "tokens": 5200, "unique_owners": 1424, "volume_change": "5.1386 ETH", "percent_change": 19763.846},
-{"imgurl": "https://howlerz.mypinata.cloud/ipfs/QmQMzLa4g5BG6kCjpGPUj3CAHVrSe3EG5SyceD6rwnzryE/3293.png", "address": "0x40cf6a63c35b6886421988871f6b74cc86309940", "name": "HOWLERZ", "tokens": 5000, "unique_owners": 2318, "volume_change": "14.565 ETH", "percent_change": 18206.25},
-{"imgurl": "https://kongz.herokuapp.com/static/erc1155/weapons/400x400/cactus_on_a_stick.png", "address": "0x0e28a33728b61a8abe11ac9adc0af17c0d3d7603", "name": "", "tokens": 28, "unique_owners": 364, "volume_change": "909.469241 ETH", "percent_change": 14588.914},
-{"imgurl": "http://ipfs-proxy.prod.svc.cluster.local/ipfs/QmTrQGwSNjKx7K8HLp6XFcSYyJJB392rrrECCo4bLADuMS", "address": "0x33857ad1031122a00a68e6bf9ac4475ba6c6f8be", "name": "CandyRobbers", "tokens": 5000, "unique_owners": 2484, "volume_change": "4.0936 ETH", "percent_change": 13645.333},
-{"imgurl": "http://ipfs-proxy.prod.svc.cluster.local/ipfs/QmNaKCPFi7KzHiLQ4nU9K8gEZ6gvGLng1jxKMd2GPQ7tuc/6033.png", "address": "0x136b586632497c655c258ee7602c8c6789672319", "name": "Emoji Smile Plz", "tokens": 7777, "unique_owners": 114, "volume_change": "31.88989 ETH", "percent_change": 12755.956},
-{"imgurl": "http://ipfs-proxy.prod.svc.cluster.local/ipfs/QmaTmANmWSnLBt3qF1ggtTvsC6J7SsCeYUCsT2fmvzYW9W", "address": "0x2ee6af0dff3a1ce3f7e3414c52c48fd50d73691e", "name": "Bored Ape Yacht Club", "tokens": 9546, "unique_owners": 3792, "volume_change": "59.612977 ETH", "percent_change": 53416.645},
-{"imgurl": "http://ipfs-proxy.prod.svc.cluster.local/ipfs/QmQ239zUwimRZjHukrUuTdAjTFCzdcTaQ2ThLD2U8EVGVG", "address": "0x88091012eedf8dba59d08e27ed7b22008f5d6fe5", "name": "Secret Society of Whales", "tokens": 10000, "unique_owners": 3920, "volume_change": "28.827459 ETH", "percent_change": 28827.459},
-{"imgurl": "http://ipfs-proxy.prod.svc.cluster.local/ipfs/QmdwxmL59sj5X8bGa2vMeb3rrQTfNM1hnyYsTUdAq61w55/0xcube.gif", "address": "0x5f7b42e237600530e8d286f9c4ef48f5ea5ef518", "name": "0xCubes", "tokens": 1428, "unique_owners": 624, "volume_change": "29.300758 ETH", "percent_change": 18312.975}]
