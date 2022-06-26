@@ -166,10 +166,10 @@ def plotTop():
     tokenVChange = []
     topRising = []
     for i in range(len(temp)):
-    tokenName.append(temp[i]['name'])
-    tokenPChange.append(temp[i]['percent_change'])
-    tokenVChange.append(temp[i]['volume_change'])
-    topRising.append([temp[i]['name'], temp[i]['percent_change'], temp[i]['volume_change']])
+        tokenName.append(temp[i]['name'])
+        tokenPChange.append(temp[i]['percent_change'])
+        tokenVChange.append(temp[i]['volume_change'])
+        topRising.append([temp[i]['name'], temp[i]['percent_change'], temp[i]['volume_change']])
 
 
     fig = plt.figure()
