@@ -177,9 +177,12 @@ def plotTop():
     plt.bar(tokenName, tokenPChange)
     #plt.bar(get_trending(10, '3d'), 10)
 
-#Sentiment Code
 
-def getSentiment(address):
+
+#These are the code that will go into views.py 
+
+#Sentiment Code
+def getSentiment():
     API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
     API_Secret = "uwgDp27NZ2sEsHfV7oGY95Dy0di38mhQDs9FjzJSfM6n2ejfSr"
     Bearer_Token = "AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
@@ -212,14 +215,6 @@ def getSentiment(address):
             raise Exception(response.status_code, response.text)
         return response.json()
 
-    def calcSent():
-        json_response = connect_to_endpoint(search_url, query_params)
-        jsonString = (json.dumps(json_response, indent=4, sort_keys=True))
-        #removes search_url and query_params from inside jsonString
-        jsonString = jsonString.rstrip('\nendpoint') 
-        response = json.loads(jsonString)
-        array = [x['text'] for x in response['data']]
-
     def analyse(tweet):
         sentiment_model = flair.models.TextClassifier.load('en-sentiment')
         sentence = flair.data.Sentence(tweet)
@@ -229,27 +224,33 @@ def getSentiment(address):
         #print(sentence.labels[0].score)
         return sentence.labels[0].value, sentence.labels[0].score
 
-    def summarise(array):
-        sentimentMap = {'POSITIVE':0, 'NEGATIVE':0}
-        avgScore = 0
-        length = len(array)
-        for i in range(length):
-            sentiment, score = analyse(array[i])
-            #if-else needed because to convert score to negative 
-            sentimentMap[sentiment] += 1 
-            if sentiment == 'POSITIVE':
-                avgScore += score
-            else:
-                avgScore -= score            
-        return avgScore/length, sentimentMap
-        #print(analyse(array[0]))
-        print(summarise(array))
+    json_response = connect_to_endpoint(search_url, query_params)
+    jsonString = (json.dumps(json_response, indent=4, sort_keys=True))
+    #removes search_url and query_params from inside jsonString
+    jsonString = jsonString.rstrip('\nendpoint') 
+    response = json.loads(jsonString)
+    array = [x['text'] for x in response['data']]
 
-    summarise()
+
+    sentimentMap = {'POSITIVE':0, 'NEGATIVE':0}
+    avgScore = 0
+    length = len(array)
+    for i in range(length):
+        sentiment, score = analyse(array[i])
+        #if-else needed because to convert score to negative 
+        sentimentMap[sentiment] += 1 
+        if sentiment == 'POSITIVE':
+            avgScore += score
+        else:
+            avgScore -= score    
+    return avgScore/length, sentimentMap
+    #print(analyse(array[0]))
+
 
 def viewIndividualNFTData(address):
     if (len(address)!= 40): #if input in the form of collection name, not address
         name = find_collections(address) #return address of collection
+    return token_trades(name)
     
-    
-    
+
+
