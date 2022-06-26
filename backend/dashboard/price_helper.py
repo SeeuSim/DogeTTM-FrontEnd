@@ -1,4 +1,3 @@
-#Retrieve all tokens in a collection
 import os
 import random
 from decimal import Decimal
@@ -80,8 +79,6 @@ def token_trades(address:str, coin:str, id:int, time_period:str) -> dict or list
     return response
   return response['included'][1]['attributes']['history']
 
-#print(token_trades("0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D", "ethereum", 2087, "365d"))
-
 
 def find_collections(name:str) -> dict or list:
   "Find collections, given the name as a string"
@@ -152,12 +149,10 @@ def get_trending(limit:int, period:str) -> dict:
         "percent_change": stat['attributes']['volume_change_percent']
     })
 
-
   return {'data':sorted(out, key=lambda x: Decimal(x['percent_change']), reverse=True)}
 
 
 def get_top(param:str, limit:int) -> dict:
-
   endpoint = 'https://api.rarify.tech/data/contracts'
   headers = {
       "Authorization": f'Bearer {RARIFY_API_KEY}'
@@ -188,8 +183,6 @@ def get_top(param:str, limit:int) -> dict:
         "min_price": format_price(stat['attributes']["min_price"], stat['attributes']['payment_asset']['code']),
         "volume": format_price(stat['attributes']["volume"], stat['attributes']['payment_asset']['code'])
     })
-
-  # return response
   return {"data":sorted(out, key=lambda x: Decimal(x[param][:-4]), reverse=True)}
 
 
@@ -228,71 +221,71 @@ query_params = {'query': '(luna) (lang:en)',
     'tweet.fields': 'created_at,lang'}
 # query_params = {'query': '(from:twitterdev -is:retweet) OR #twitterdev','tweet.fields': 'author_id'}
 
-#Takes in String name of token,
-#Returns tuple of sentimentScore(float from 0 to 1), and sentimentRatio(float from 0 to 1) (percentage of positive sentiments)
 def getSentiment(name):
-    API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
-    API_Secret = "uwgDp27NZ2sEsHfV7oGY95Dy0di38mhQDs9FjzJSfM6n2ejfSr"
-    Bearer_Token = "AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
-    search_url = "https://api.twitter.com/2/tweets/search/recent"
+  """
+  Takes in String name of token,
+  Returns tuple of sentimentScore(float from 0 to 1), and sentimentRatio(float from 0 to 1) (percentage of positive sentiments)
+  """
+  API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
+  API_Secret = "uwgDp27NZ2sEsHfV7oGY95Dy0di38mhQDs9FjzJSfM6n2ejfSr"
+  Bearer_Token = "AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
+  search_url = "https://api.twitter.com/2/tweets/search/recent"
 
-    # Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
-    # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
-    query_params = {'query': (name) + '(lang:en)',
-        #'tweet_mode' : 'extended',
-        'max_results': '20',
-        'tweet.fields': 'created_at,lang'}
-    # query_params = {'query': '(from:twitterdev -is:retweet) OR #twitterdev','tweet.fields': 'author_id'}
-
-
-    def bearer_oauth(r):
-        """
-        Method required by bearer token authentication.
-        """
-
-        r.headers["Authorization"] = f"Bearer {Bearer_Token}"
-        r.headers["User-Agent"] = "v2RecentSearchPython"
-        return r
-
-    #add &tweet_mode=extended to end of URL for full-length tweets
-    def connect_to_endpoint(url, params):
-        #url = url + "&tweet_mode=extended"
-        response = requests.get(url, auth=bearer_oauth, params=params)
-        if response.status_code != 200:
-            raise Exception(response.status_code, response.text)
-        return response.json()
-
-    def analyse(tweet):
-        sentiment_model = flair.models.TextClassifier.load('en-sentiment')
-        sentence = flair.data.Sentence(tweet)
-        sentiment_model.predict(sentence)
-        #print(tweet)
-        #print(sentence.labels[0].value)
-        #print(sentence.labels[0].score)
-        return sentence.labels[0].value, sentence.labels[0].score
-
-    json_response = connect_to_endpoint(search_url, query_params)
-    jsonString = (json.dumps(json_response, indent=4, sort_keys=True))
-    #removes search_url and query_params from inside jsonString
-    jsonString = jsonString.rstrip('\nendpoint')
-    response = json.loads(jsonString)
-    array = [x['text'] for x in response['data']]
+  # Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
+  # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
+  query_params = {'query': (name) + '(lang:en)',
+      #'tweet_mode' : 'extended',
+      'max_results': '20',
+      'tweet.fields': 'created_at,lang'}
+  # query_params = {'query': '(from:twitterdev -is:retweet) OR #twitterdev','tweet.fields': 'author_id'}
 
 
-    sentimentRatio = 0
-    avgScore = 0
-    length = len(array)
-    for i in range(length):
-        sentiment, score = analyse(array[i])
-        #if-else needed because to convert score to negative
-        if sentiment == 'POSITIVE':
-            sentimentRatio += 1
-            avgScore += score
-        else:
-            avgScore -= score
-    return avgScore/length, sentimentRatio/length
+  def bearer_oauth(r):
+      """
+      Method required by bearer token authentication.
+      """
 
-#print(getSentiment('luna'))
+      r.headers["Authorization"] = f"Bearer {Bearer_Token}"
+      r.headers["User-Agent"] = "v2RecentSearchPython"
+      return r
+
+  #add &tweet_mode=extended to end of URL for full-length tweets
+  def connect_to_endpoint(url, params):
+      #url = url + "&tweet_mode=extended"
+      response = requests.get(url, auth=bearer_oauth, params=params)
+      if response.status_code != 200:
+          raise Exception(response.status_code, response.text)
+      return response.json()
+
+  def analyse(tweet):
+      sentiment_model = flair.models.TextClassifier.load('en-sentiment')
+      sentence = flair.data.Sentence(tweet)
+      sentiment_model.predict(sentence)
+      #print(tweet)
+      #print(sentence.labels[0].value)
+      #print(sentence.labels[0].score)
+      return sentence.labels[0].value, sentence.labels[0].score
+
+  json_response = connect_to_endpoint(search_url, query_params)
+  jsonString = (json.dumps(json_response, indent=4, sort_keys=True))
+  #removes search_url and query_params from inside jsonString
+  jsonString = jsonString.rstrip('\nendpoint')
+  response = json.loads(jsonString)
+  array = [x['text'] for x in response['data']]
+
+
+  sentimentRatio = 0
+  avgScore = 0
+  length = len(array)
+  for i in range(length):
+      sentiment, score = analyse(array[i])
+      #if-else needed because to convert score to negative
+      if sentiment == 'POSITIVE':
+          sentimentRatio += 1
+          avgScore += score
+      else:
+          avgScore -= score
+  return avgScore/length, sentimentRatio/length
 
 
 def getPastSentiment(name, time):
@@ -324,8 +317,4 @@ def getPastSentiment(name, time):
   params['end_time'] = now
 
   return getSentiment(name)
-
-#print(getPastSentiment('luna', 60))
-
-
 
