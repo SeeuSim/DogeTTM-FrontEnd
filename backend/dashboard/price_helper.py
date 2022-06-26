@@ -8,13 +8,11 @@ from operator import itemgetter
 # import json
 # import flair
 # import collections
-# from dotenv import load_dotenv
-# import os
+import dotenv
+import os
 
-# load_dotenv('../../frontend/.env')
-# RARIFY_API_KEY = os.environ.get('RARIFY_API_KEY')
-RARIFY_API_KEY='1959b00b-435b-4c27-a1b7-66168414d0dc'
-
+dotenv.load_dotenv("../frontend/.env")
+RARIFY_API_KEY:str = os.environ.get('RARIFY_API_KEY')
 
 def format_price(price:str, currency:str):
   """Prices are in format of 18 decimals"""
