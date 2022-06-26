@@ -98,7 +98,11 @@ const Ranking: FunctionalComponent = () => {
             rows = raw.map<h.JSX.Element>((row) => (
                 <tr>
                     <td><img class={style.TableImg} src={row['imgurl']}></img></td>
-                    <td>{row['name']}</td>
+                    <td>
+                        <a href={`/collections/${row['address']}`}>
+                            {row['name']}
+                        </a>
+                    </td>
                     <td>{row['volume_change']}</td>
                     <td>{row['percent_change']}</td>
                 </tr>
@@ -131,7 +135,11 @@ const Ranking: FunctionalComponent = () => {
             rows = rawRows.map<h.JSX.Element>((row) => (
                 <tr>
                     <td><img class={style.TableImg} src={row['imgurl']}></img></td>
-                    <td>{row['name']}</td>
+                    <td>
+                        <a href={`/collections/${row['address']}`}>
+                            {row['name']}
+                        </a>
+                    </td>
                     <td>{row[rankValue=="min_price"
                                 ? "min_price"
                                 : rankValue == "max_price"
