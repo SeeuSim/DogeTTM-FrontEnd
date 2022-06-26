@@ -7,7 +7,7 @@ from operator import itemgetter
 from datetime import datetime, timedelta
 import os
 import json
-import flair
+#import flair
 import collections
 
 RARIFY_API_KEY = '1959b00b-435b-4c27-a1b7-66168414d0dc'
