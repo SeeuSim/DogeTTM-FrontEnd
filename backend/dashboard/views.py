@@ -3,8 +3,8 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework import viewsets
 from django.http import HttpResponse, JsonResponse
-import requests;
-import price_helper.py
+import requests
+from dashboard import price_helper
 
 def topSentiments(request, param:str):
     return getSentiment()
