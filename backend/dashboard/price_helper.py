@@ -4,13 +4,16 @@ from decimal import Decimal
 import matplotlib.pyplot as plt
 import pandas as pd
 from operator import itemgetter
-from datetime import datetime, timedelta
-import os
-import json
-import flair
-import collections
+# from datetime import datetime, timedelta
+# import json
+# import flair
+# import collections
+# from dotenv import load_dotenv
+# import os
 
-RARIFY_API_KEY = '1959b00b-435b-4c27-a1b7-66168414d0dc'
+# load_dotenv('../../frontend/.env')
+# RARIFY_API_KEY = os.environ.get('RARIFY_API_KEY')
+RARIFY_API_KEY='1959b00b-435b-4c27-a1b7-66168414d0dc'
 
 
 def format_price(price:str, currency:str):
@@ -34,7 +37,7 @@ def get_price_history(address, coin, time_period):
     return response
   return response['included'][-1]['attributes']['history']
 
-  
+
 
 # get_price_history("0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB", "ethereum", "24h")
 #print([(format_price(x['avg_price'], "ETH"), x['time']) for x in get_price_history("0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB", "ethereum", "30d")])
@@ -84,7 +87,7 @@ def find_collections(name:str) -> dict or list:
     }
     params = {
         'filter[name]': name
-        #'filter[contract]": f'{id_from_contract}',    
+        #'filter[contract]": f'{id_from_contract}',
         #'filter[name]": f'{token_id}'
         #'include': 'metadata'
     }
@@ -121,9 +124,9 @@ def get_trending(limit:int, period:str) -> dict or list:
 
   tokens = response['data']
   stats = response['included']
-  
+
   out = []
-  
+
   for token, stat in zip(tokens, stats):
     nm = ""
     if 'name' in token['attributes']:
@@ -148,6 +151,7 @@ def get_top(param:str, limit:int) -> dict or list:
   headers = {
       "Authorization": f'Bearer {RARIFY_API_KEY}'
   }
+  print(RARIFY_API_KEY)
 
   params = {
       'include': 'insights',
@@ -166,10 +170,10 @@ def plotTop():
     tokenVChange = []
     topRising = []
     for i in range(len(temp)):
-    tokenName.append(temp[i]['name'])
-    tokenPChange.append(temp[i]['percent_change'])
-    tokenVChange.append(temp[i]['volume_change'])
-    topRising.append([temp[i]['name'], temp[i]['percent_change'], temp[i]['volume_change']])
+        tokenName.append(temp[i]['name'])
+        tokenPChange.append(temp[i]['percent_change'])
+        tokenVChange.append(temp[i]['volume_change'])
+        topRising.append([temp[i]['name'], temp[i]['percent_change'], temp[i]['volume_change']])
 
 
     fig = plt.figure()
@@ -179,8 +183,9 @@ def plotTop():
 
 
 
-#These are the code that will go into views.py 
+#These are the code that will go into views.py
 
+'''
 #Sentiment Code
 def getSentiment():
     API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
@@ -206,7 +211,7 @@ def getSentiment():
         r.headers["User-Agent"] = "v2RecentSearchPython"
         return r
 
-    #add &tweet_mode=extended to end of URL for full-length tweets 
+    #add &tweet_mode=extended to end of URL for full-length tweets
     def connect_to_endpoint(url, params):
         #url = url + "&tweet_mode=extended"
         response = requests.get(url, auth=bearer_oauth, params=params)
@@ -227,7 +232,7 @@ def getSentiment():
     json_response = connect_to_endpoint(search_url, query_params)
     jsonString = (json.dumps(json_response, indent=4, sort_keys=True))
     #removes search_url and query_params from inside jsonString
-    jsonString = jsonString.rstrip('\nendpoint') 
+    jsonString = jsonString.rstrip('\nendpoint')
     response = json.loads(jsonString)
     array = [x['text'] for x in response['data']]
 
@@ -237,12 +242,12 @@ def getSentiment():
     length = len(array)
     for i in range(length):
         sentiment, score = analyse(array[i])
-        #if-else needed because to convert score to negative 
-        sentimentMap[sentiment] += 1 
+        #if-else needed because to convert score to negative
+        sentimentMap[sentiment] += 1
         if sentiment == 'POSITIVE':
             avgScore += score
         else:
-            avgScore -= score    
+            avgScore -= score
     return avgScore/length, sentimentMap
     #print(analyse(array[0]))
 
@@ -251,6 +256,6 @@ def viewIndividualNFTData(address):
     if (len(address)!= 40): #if input in the form of collection name, not address
         name = find_collections(address) #return address of collection
     return token_trades(name)
-    
 
 
+'''

@@ -16,12 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-import quickstart
-from quickstart import views
+from dashboard import views
+# from dashboard import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('top/<param>', voews.topSentiments, name= "topSentiments")
-    path('top/<param>', voews.singleCollection, name= "singleCollection")
+    # path('top/<param>', views.topSentiments, name= "topSentiments"),
+    # path('top/<param>', views.singleCollection, name= "singleCollection")
+    path('toprank/<param>', views.topRank, name="topRank")
 #path TBD
 ]
