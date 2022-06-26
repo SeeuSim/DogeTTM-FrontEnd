@@ -4,11 +4,13 @@ from decimal import Decimal
 import matplotlib.pyplot as plt
 import pandas as pd
 from operator import itemgetter
+import sys
+sys.path.append("..")
 # from datetime import datetime, timedelta
 # import json
 # import flair
 # import collections
-import dotenv
+from .. import dotenv
 import os
 
 dotenv.load_dotenv("../frontend/.env")
@@ -183,9 +185,22 @@ def plotTop():
 
 #These are the code that will go into views.py
 
-'''
-#Sentiment Code
-def getSentiment():
+API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
+API_Secret = "uwgDp27NZ2sEsHfV7oGY95Dy0di38mhQDs9FjzJSfM6n2ejfSr"
+Bearer_Token = "AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
+search_url = "https://api.twitter.com/2/tweets/search/recent"
+
+# Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
+# expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
+query_params = {'query': '(luna) (lang:en)',
+    #'tweet_mode' : 'extended',
+    'max_results': '20',
+    'tweet.fields': 'created_at,lang'}
+# query_params = {'query': '(from:twitterdev -is:retweet) OR #twitterdev','tweet.fields': 'author_id'}
+
+#Takes in String name of token, 
+#Returns tuple of sentimentScore(float from 0 to 1), and sentimentRatio(float from 0 to 1) (percentage of positive sentiments)
+def getSentiment(name):
     API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
     API_Secret = "uwgDp27NZ2sEsHfV7oGY95Dy0di38mhQDs9FjzJSfM6n2ejfSr"
     Bearer_Token = "AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
@@ -193,7 +208,7 @@ def getSentiment():
 
     # Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
     # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
-    query_params = {'query': '(luna) (lang:en)',
+    query_params = {'query': (name) + '(lang:en)',
         #'tweet_mode' : 'extended',
         'max_results': '20',
         'tweet.fields': 'created_at,lang'}
@@ -209,11 +224,10 @@ def getSentiment():
         r.headers["User-Agent"] = "v2RecentSearchPython"
         return r
 
-    #add &tweet_mode=extended to end of URL for full-length tweets
+    #add &tweet_mode=extended to end of URL for full-length tweets 
     def connect_to_endpoint(url, params):
         #url = url + "&tweet_mode=extended"
         response = requests.get(url, auth=bearer_oauth, params=params)
-        #print(response.status_code)
         if response.status_code != 200:
             raise Exception(response.status_code, response.text)
         return response.json()
@@ -230,30 +244,55 @@ def getSentiment():
     json_response = connect_to_endpoint(search_url, query_params)
     jsonString = (json.dumps(json_response, indent=4, sort_keys=True))
     #removes search_url and query_params from inside jsonString
-    jsonString = jsonString.rstrip('\nendpoint')
+    jsonString = jsonString.rstrip('\nendpoint') 
     response = json.loads(jsonString)
     array = [x['text'] for x in response['data']]
 
 
-    sentimentMap = {'POSITIVE':0, 'NEGATIVE':0}
+    sentimentRatio = 0
     avgScore = 0
     length = len(array)
     for i in range(length):
         sentiment, score = analyse(array[i])
-        #if-else needed because to convert score to negative
-        sentimentMap[sentiment] += 1
+        #if-else needed because to convert score to negative 
         if sentiment == 'POSITIVE':
+            sentimentRatio += 1
             avgScore += score
         else:
-            avgScore -= score
-    return avgScore/length, sentimentMap
-    #print(analyse(array[0]))
+            avgScore -= score    
+    return avgScore/length, sentimentRatio/length
 
+#print(getSentiment('luna'))
 
-def viewIndividualNFTData(address):
-    if (len(address)!= 40): #if input in the form of collection name, not address
-        name = find_collections(address) #return address of collection
-    return token_trades(name)
+#Input: String : Name of collection, Integer : Time in minutes
+#Output: Same as getSentiment(name)
+#Input: String : Name of collection, Integer : Time in minutes
+#Output: Same as getSentiment(name)
+def getPastSentiment(name, time):
+  endpoint = 'https://api.twitter.com/2/tweets/search/recent'
+  headers = {'authorization': f'Bearer {Bearer_Token}'}
+  params = {
+      'query': name + '(lang:en)',
+      'max_results': '100',
+      'tweet.fields': 'created_at, lang'
+  }
 
+  dtformat = '%Y-%m-%dT%H:%M:%SZ'
 
-'''
+  def time_travel(now, mins):
+      now = datetime.strptime(now, dtformat)
+      back_in_time = now - timedelta(minutes=mins)
+      return back_in_time.strftime(dtformat)
+
+  now = datetime.now()
+  last_week = now - timedelta(days=7) 
+  now = now.strftime(dtformat)
+
+  pre60 = time_travel(now, time)
+  params['start_time'] = pre60
+  params['end_time'] = now
+
+  return getSentiment(name)
+
+#print(getPastSentiment('luna', 60))
+
