@@ -18,4 +18,7 @@ from . import price_helper
 
 
 def topRank(request, param:str):
-    return JsonResponse(price_helper.get_top(param, 10))
+  return JsonResponse(price_helper.get_top(param, 10))
+
+def topTrending(request, period:str):
+  return JsonResponse(price_helper.get_trending(10, period))

@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # path('top/<param>', views.topSentiments, name= "topSentiments"),
     # path('top/<param>', views.singleCollection, name= "singleCollection")
-    path('toprank/<param>', views.topRank, name="topRank")
+    path('toprank/<param>', views.topRank, name="topRank"),
+    path('toptrend/<period>', views.topTrending, name="topTrending")
 #path TBD
 ]
