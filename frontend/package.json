@@ -48,13 +48,8 @@
       "<rootDir>/tests/__mocks__/browserMocks.ts",
       "<rootDir>/tests/__mocks__/setupTests.ts"
     ]
-<<<<<<< HEAD
   },
   "optionalDependencies": {
     "fsevents": "*"
  }
 }
-=======
-  }
-}
->>>>>>> 55aa04263aeaaa9293756413b3a102a60a32f84e

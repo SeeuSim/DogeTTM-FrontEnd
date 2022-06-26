@@ -179,7 +179,7 @@ def plotTop():
 
 #Sentiment Code
 
-def getSentiment():
+def getSentiment(address):
     API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
     API_Secret = "uwgDp27NZ2sEsHfV7oGY95Dy0di38mhQDs9FjzJSfM6n2ejfSr"
     Bearer_Token = "AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
@@ -247,3 +247,9 @@ def getSentiment():
 
     summarise()
 
+def viewIndividualNFTData(address):
+    if (len(address)!= 40): #if input in the form of collection name, not address
+        name = find_collections(address) #return address of collection
+    
+    
+    
