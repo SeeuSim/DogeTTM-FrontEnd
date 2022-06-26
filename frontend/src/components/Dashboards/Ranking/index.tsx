@@ -2,6 +2,9 @@ import axios from 'axios';
 import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
 import style from "./style.css";
+import * as URLCONFIG from "../../../../URLCONF.json";
+
+const baseURL = URLCONFIG.endpoint;
 
 interface TrendingData {
     "imgurl":string,
@@ -49,7 +52,7 @@ const Ranking: FunctionalComponent = () => {
     }
 
     const fetchRankData = useCallback(() => {
-        axios.get<RankResponse>(`http://127.0.0.1:8000/toprank/${rankValue}`)
+        axios.get<RankResponse>(`${baseURL}/toprank/${rankValue}`)
         .then((response) => {
             console.log(response);
             setRankData(response.data);
@@ -58,7 +61,7 @@ const Ranking: FunctionalComponent = () => {
     }, [rankValue!="trending"]);
 
     const fetchTrendData = useCallback(() => {
-        axios.get<TrendResponse>(`http://127.0.0.1:8000/toptrend/${trendTimeValue}`)
+        axios.get<TrendResponse>(`${baseURL}/toptrend/${trendTimeValue}`)
         .then((response) => {
             console.log(response);
             setTrendData(response.data);

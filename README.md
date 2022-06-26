@@ -37,3 +37,45 @@ The webapp uses both AJAX and server-rendered HTML to communicate frontend(clien
 
 Price Prediction Model:
 We use simple linear regression algorithm under supervised learning to train our price prediction model, with sentiment scores over time and price over time as our parameters.
+
+## To Run
+1) Setup a directory `directory_name` on your local machine. In your terminal, change directory to `directory_name` as specified earlier, and `git clone` this package there.
+
+2) Ensure that you have Python and `pip` installed on your machine.
+
+3) Setup a virtual environment using the following terminal command:
+```
+python -m venv /path/to/new/virtual/environment
+```
+Proceed to `activate` the virtual environment using the specific system command for your Operating System. Mac users may wish to use the command `python3` instead to avoid conflicts with the Python version installed with Xcode Tools.
+
+4) Change Directory to the `directory_name/backend`. Then install the Python packages via this command:
+```
+python -m pip install -r requirements.txt
+```
+Should any of the packages fail to install, the remaining packages may/may not be installed and the command may need to be re-run after fixing the issues highlighted.
+
+5) Change Directory to the `directory_name/frontend`. Using your `npm` or Node Package Manager, run the terminal command:
+```
+npm install
+```
+to install any dependencies.
+
+6) Get the necessary API keys from <a>rarify.tech</a> and <a>developer.twitter.com</a> and populate the `directory_name/frontend/.env` file with the necessary details. </br>
+Alternatively, you may reach out for the keys if needed.
+
+7) Change directory to `directory_name/backend` and run these commands:
+```
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+```
+Save the network endpoint under "endpoint" in `directory_name/frontend/URLCONFIG.json`
+
+8) Change directory to `directory_name/frontend` and run the command:
+```
+npm run dev
+```
+Save the network endpoint and paste it in CORS_ALLOWED_ORIGINS under `directory_name/backend/backend/settings.py`
+
+9) Navigate to the frontend network endpoint in your browser of choice.

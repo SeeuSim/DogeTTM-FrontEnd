@@ -4,10 +4,11 @@ import random
 from decimal import Decimal
 from operator import itemgetter
 
-# from datetime import datetime, timedelta
-# import json
-# import flair
+from datetime import datetime, timedelta
+import json
+import flair
 # import collections
+
 import dotenv
 import matplotlib.pyplot as plt
 from numpy import add
@@ -21,8 +22,7 @@ RARIFY_API_KEY:str = os.environ.get('RARIFY_API_KEY')
 def format_price(price:str, currency:str):
   """Prices are in format of 18 decimals"""
   # Returns the price in a readable format, given the 18 decimal raw price
-
-  return f"{(Decimal(price).normalize() * (Decimal('10')**Decimal('-18'))).__str__()} {currency}"
+  return f"{(Decimal(price).normalize() * (Decimal('10')**Decimal('-18'))).__str__().format('.f')} {currency}"
 
 
 def format_id(tokenID:int) -> str:
@@ -30,6 +30,7 @@ def format_id(tokenID:int) -> str:
   if len(hexID) % 2 == 0:
     return hexID[2:]
   return hexID.replace('x', '')
+
 
 def getart(address:str, tokens:int) -> str:
   tokenid = abs(tokens - random.randint(0, 100))
@@ -60,9 +61,9 @@ def get_price_history(address, coin, time_period):
   return response['included'][-1]['attributes']['history']
 
 
-"""Get trade history for a token"""
-# To get metadata, remove the insights from the endpoint
 def token_trades(address:str, coin:str, id:int, time_period:str) -> dict or list:
+  """Get trade history for a token"""
+# To get metadata, remove the insights from the endpoint
   if len(address) != 42: return ["Error: invalid address"]
   raw_id = hex(id)
   if len(raw_id) % 2 == 0:
@@ -82,37 +83,36 @@ def token_trades(address:str, coin:str, id:int, time_period:str) -> dict or list
 #print(token_trades("0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D", "ethereum", 2087, "365d"))
 
 
-"Find collections, given the name as a string"
-
-"""To Find specific tokens in the collection, given ID and collection"""
-"""
- 1st: find_collections(name)
- 2nd: select collection and save contract ID as 'id_from_contract'
- 3rd: search w the following params, similar to find_collections
-
- params = {
-   'filter[contract]": f'{id_from_contract}',
-   'filter[name]": f'{token_id}'
-   'include': 'metadata'
- }
-"""
-
 def find_collections(name:str) -> dict or list:
-    endpoint = 'https://api.rarify.tech/data/contracts'
-    headers = {
-        "Authorization": f'Bearer {RARIFY_API_KEY}'
-    }
-    params = {
-        'filter[name]': name
-        #'filter[contract]": f'{id_from_contract}',
-        #'filter[name]": f'{token_id}'
-        #'include': 'metadata'
-    }
-    response = requests.get(endpoint, headers=headers, params=params).json()
+  "Find collections, given the name as a string"
 
-    if 'errors' in response:
-        return response
-    return response['data']
+  """To Find specific tokens in the collection, given ID and collection"""
+  """
+  1st: find_collections(name)
+  2nd: select collection and save contract ID as 'id_from_contract'
+  3rd: search w the following params, similar to find_collections
+
+  params = {
+    'filter[contract]": f'{id_from_contract}',
+    'filter[name]": f'{token_id}'
+    'include': 'metadata'
+  }
+  """
+  endpoint = 'https://api.rarify.tech/data/contracts'
+  headers = {
+      "Authorization": f'Bearer {RARIFY_API_KEY}'
+  }
+  params = {
+      'filter[name]': name
+      #'filter[contract]": f'{id_from_contract}',
+      #'filter[name]": f'{token_id}'
+      #'include': 'metadata'
+  }
+  response = requests.get(endpoint, headers=headers, params=params).json()
+
+  if 'errors' in response:
+      return response
+  return response['data']
 
 
 def get_trending(limit:int, period:str) -> dict:
@@ -155,6 +155,7 @@ def get_trending(limit:int, period:str) -> dict:
 
   return {'data':sorted(out, key=lambda x: Decimal(x['percent_change']), reverse=True)}
 
+
 def get_top(param:str, limit:int) -> dict:
 
   endpoint = 'https://api.rarify.tech/data/contracts'
@@ -191,6 +192,7 @@ def get_top(param:str, limit:int) -> dict:
   # return response
   return {"data":sorted(out, key=lambda x: Decimal(x[param][:-4]), reverse=True)}
 
+
 def plotTop():
     temp = get_trending(10, '3d')
     tokenName = []
@@ -213,9 +215,22 @@ def plotTop():
 
 #These are the code that will go into views.py
 
-'''
-#Sentiment Code
-def getSentiment():
+API_key = os.environ.get('TWITTER_API_KEY')
+API_Secret = os.environ.get('TWITTER_API_SECRET')
+Bearer_Token = os.environ.get('TWITTER_BEARER_TOKEN')
+search_url = "https://api.twitter.com/2/tweets/search/recent"
+
+# Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
+# expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
+query_params = {'query': '(luna) (lang:en)',
+    #'tweet_mode' : 'extended',
+    'max_results': '20',
+    'tweet.fields': 'created_at,lang'}
+# query_params = {'query': '(from:twitterdev -is:retweet) OR #twitterdev','tweet.fields': 'author_id'}
+
+#Takes in String name of token,
+#Returns tuple of sentimentScore(float from 0 to 1), and sentimentRatio(float from 0 to 1) (percentage of positive sentiments)
+def getSentiment(name):
     API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
     API_Secret = "uwgDp27NZ2sEsHfV7oGY95Dy0di38mhQDs9FjzJSfM6n2ejfSr"
     Bearer_Token = "AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
@@ -223,7 +238,7 @@ def getSentiment():
 
     # Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
     # expansions,tweet.fields,media.fields,poll.fields,place.fields,user.fields
-    query_params = {'query': '(luna) (lang:en)',
+    query_params = {'query': (name) + '(lang:en)',
         #'tweet_mode' : 'extended',
         'max_results': '20',
         'tweet.fields': 'created_at,lang'}
@@ -243,7 +258,6 @@ def getSentiment():
     def connect_to_endpoint(url, params):
         #url = url + "&tweet_mode=extended"
         response = requests.get(url, auth=bearer_oauth, params=params)
-        #print(response.status_code)
         if response.status_code != 200:
             raise Exception(response.status_code, response.text)
         return response.json()
@@ -265,25 +279,53 @@ def getSentiment():
     array = [x['text'] for x in response['data']]
 
 
-    sentimentMap = {'POSITIVE':0, 'NEGATIVE':0}
+    sentimentRatio = 0
     avgScore = 0
     length = len(array)
     for i in range(length):
         sentiment, score = analyse(array[i])
         #if-else needed because to convert score to negative
-        sentimentMap[sentiment] += 1
         if sentiment == 'POSITIVE':
+            sentimentRatio += 1
             avgScore += score
         else:
             avgScore -= score
-    return avgScore/length, sentimentMap
-    #print(analyse(array[0]))
+    return avgScore/length, sentimentRatio/length
+
+#print(getSentiment('luna'))
 
 
-def viewIndividualNFTData(address):
-    if (len(address)!= 40): #if input in the form of collection name, not address
-        name = find_collections(address) #return address of collection
-    return token_trades(name)
+def getPastSentiment(name, time):
+  """
+  Input: String : Name of collection, Integer : Time in minutes
+  Output: Same as getSentiment(name)
+  """
+  endpoint = 'https://api.twitter.com/2/tweets/search/recent'
+  headers = {'authorization': f'Bearer {Bearer_Token}'}
+  params = {
+      'query': name + '(lang:en)',
+      'max_results': '100',
+      'tweet.fields': 'created_at, lang'
+  }
+
+  dtformat = '%Y-%m-%dT%H:%M:%SZ'
+
+  def time_travel(now, mins):
+      now = datetime.strptime(now, dtformat)
+      back_in_time = now - timedelta(minutes=mins)
+      return back_in_time.strftime(dtformat)
+
+  now = datetime.now()
+  last_week = now - timedelta(days=7)
+  now = now.strftime(dtformat)
+
+  pre60 = time_travel(now, time)
+  params['start_time'] = pre60
+  params['end_time'] = now
+
+  return getSentiment(name)
+
+#print(getPastSentiment('luna', 60))
 
 
-'''
+
