@@ -16,7 +16,7 @@ DogeTTM is a webapp that uses social media sentiment analysis to provide NFT inv
 Note: NFT studio refers to the brand/creator of NFT tokens, an example of which would be the Bored Apt Yacht Club.
 
 ## Tech Stack
-Front-End - Typescript with Preact, Tailwind/Material CSS <br />
+Front-End - Typescript with Preact <br />
 Back-End - Django, TensorFlow, Rarify API, Heroku
 
 ## Problem and Solution
