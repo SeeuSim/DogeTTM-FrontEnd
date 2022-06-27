@@ -66,6 +66,15 @@ During milestone 2, we performed installation and set-up on 4 different OS machi
 
 We also manually tested how the Typescript components interact with one another and with the system as a whole, whether the pages are routed correctly; as well as testing the input from the fetch API to the output graphs and JSON objects displayed at the end.
 
+### Example Testcases:
+1) When on the `Home` page, the data should load when I click the `See My Data!` button.
+2) When I select the different ranking metrics and re-click the `See My Data!` button, the data should re-render according to the metric chosen.
+3) When I click on the collection name hyperlink, I should navigate to a page displaying the token metadata.
+4) The token metadata page should have a graph showing the price data.
+5) When I click on the Logo at the top left, I should navigate back to the main page.
+Other features, such as changing the price data time range via dropdown, search, sentiment analysis and price prediction, have yet to be implemented and as such are unable to be tested.
+Looking forward, a Continuous Integration (CI) workflow will be implemented to automatically test the code for each push to GitHub. This speeds up testing procedures.
+
 ## To Run
 1) Setup a directory `directory_name` on your local machine. In your terminal, change directory to `directory_name` as specified earlier, and `git clone` this package there.
 
