@@ -75,6 +75,14 @@ We also manually tested how the Typescript components interact with one another 
 Other features, such as changing the price data time range via dropdown, search, sentiment analysis and price prediction, have yet to be implemented and as such are unable to be tested.
 Looking forward, a Continuous Integration (CI) workflow will be implemented to automatically test the code for each push to GitHub. This speeds up testing procedures.
 
+### Setup and Code Security
+1) `.env` files hold sensitive environment variables and `.gitignore` prevents them from being committed, while files that need the variables can still access them
+2) `npm install` and `python -m pip install -r requirements.txt` install the necessary packages
+3) Setting the frontend endpoint in `backend/settings.py > CORS_ALLOWED_ORIGINS` and the backend endpoint in `URLCONFIG.json` allow both to communicate and send data without authentication errors
+
+#### To Be Done: 
+Setup one file to hold all necessary configurations, and manually set ports so that the two can communicate rather than through hardcoding endpoints. Also, set up a Docker so that it can be deployed to production.
+
 ## To Run
 1) Setup a directory `directory_name` on your local machine. In your terminal, change directory to `directory_name` as specified earlier, and `git clone` this package there.
 
