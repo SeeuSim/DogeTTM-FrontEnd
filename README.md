@@ -16,8 +16,8 @@ DogeTTM is a webapp that uses social media sentiment analysis to provide NFT inv
 Note: NFT studio refers to the brand/creator of NFT tokens, an example of which would be the Bored Apt Yacht Club.
 
 ## Tech Stack
-Front-End - Typescript with Preact, Tailwind/Material CSS <br />
-Back-End - Django, Moralis, TensorFlow, Heroku
+Front-End - Typescript with Preact <br />
+Back-End - Django, TensorFlow, Rarify API, Heroku
 
 ## Problem and Solution
 NFT prices are very volatile and unpredictable, and a large proportion of price movements are determined by sentiment shifts (online hype) rather than fundamental analysis such as in stocks. Unlike well-established online stock price platforms, current NFT price platforms do not provide users with useful insights into price trends other than basic price movements  (such as real-time social media sentiment analysis or celebrity tweets).
@@ -26,17 +26,41 @@ We aim to scrap data on discussions and mentions of NFT tokens/studios on social
 
 This way, investors will be better-equipped to make NFT investments since they can now view the top predicted NFTs for next week, top performing NFTs of the current week, as well as search their own NFTs of interest to view the sentiment score, making DogeTTM a very versatile platform for investors to research on NFTs.
 
-## Features Explanation
+## Features
+![Orbital Video Presentation](https://user-images.githubusercontent.com/105634117/175895718-18ef378f-db6f-4ea1-97ad-bce9eee2f531.jpg)
+
 Dashboard:
 Using a Django backend, our app will scrap data on social media platforms Twitter and Reddit and categorise tweets based on NFT collections and assign a sentiment score. Top rated NFTs will be pushed to the top of the dashboard, allowing investors to catch opportunities as soon as they sizzle.
 
 The front-end dashboard components will be created using Typescript and Preact.
 
 Search Bar:
-The webapp uses both AJAX and server-rendered HTML to communicate frontend(client webapp) to Django backend (dashboard).
+The webapp uses server-rendered HTML to communicate frontend(client webapp) to Django backend (dashboard).
 
 Price Prediction Model:
 We use simple linear regression algorithm under supervised learning to train our price prediction model, with sentiment scores over time and price over time as our parameters.
+
+## Design Principles and Diagrams
+
+Architectural Style: For this project, we use a mix of client-server architectural style and n-tier architectural style on the server-side.
+
+Design Approach : We adopt the bottom-up agile design approach by focusing on creating a minimum viable product(MVP) with a basic home page first, then expanding our feature list, starting from individual NFT page, to searchbar, to dashboard, then lastly price prediction model.
+![agile](https://user-images.githubusercontent.com/25603844/175925496-a9435b13-1cf4-4079-bead-4470f53e1530.png)
+
+UML Diagram: 
+![src_diagram (2)](https://user-images.githubusercontent.com/25603844/175934696-46c957dd-5184-47b2-a60c-4465ba92494e.png)
+
+## Problems Encountered 
+
+1. AP
+2. Functions are very computation-intensive, so resources like images and end data take a long time 
+3. 
+## Testing and Evaluation 
+For Milestone 2 we have performed developer testing as well as system testing. For subsequent milestone 3 we will integrate automated testing into our code, with the focus being on behaviour testing using Selenium and Behave in Python.
+
+During milestone 2, we performed installation and set-up on 4 different OS machines (Windows, Linux, Mac, Ubuntu), and updated the dependencies and settings to suit all machines, as well as updating README to be OS-independent.
+
+We also manually tested how the Typescript components interact with one another and with the system as a whole, whether the pages are routed correctly; as well as testing the input from the fetch API to the output graphs and JSON objects displayed at the end.
 
 ## To Run
 1) Setup a directory `directory_name` on your local machine. In your terminal, change directory to `directory_name` as specified earlier, and `git clone` this package there.
@@ -79,3 +103,19 @@ npm run dev
 Save the network endpoint and paste it in CORS_ALLOWED_ORIGINS under `directory_name/backend/backend/settings.py`
 
 9) Navigate to the frontend network endpoint in your browser of choice.
+
+## Evaluation and Subsequent Plans
+So far we have accomplished: 
+- Typescript preact frontend and Django backend development from scratch for a functional MVP.
+- Backend sentiment analysis functions.
+- Backend data processing functions for NFT prices, volume, trends against sentiment. 
+- Frontend routing between pages
+- API call functions for NFT data and routing from backend to frontend.
+- Graphing functions
+
+To-Do for Milestone 3:
+- Finish training our price prediction model and integrate it into our code.
+- Test different ML models (linear regression, CNN, RNN) and document their respective accuracy rates.
+- Optimise our fetch requests for NFT data for faster loadtime.
+- User authentication system and possibly a personal wallet 
+- CSS styling
