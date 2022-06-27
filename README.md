@@ -1,6 +1,6 @@
 # NUS Orbital'22 DogeTTM Overview
 
-A project created under NUS module CP2106: Independent Software Development Project (Gemini Level).
+A project created under NUS module CP2106: Independent Software Development Project (Gemini Level looking to upgrade to Apollo 11).
 
 Team Members: <br />
 Liu Zixin <br />
@@ -11,7 +11,7 @@ Ong Seeu Sim
 DogeTTM is a webapp that uses social media sentiment analysis to provide NFT investors with price insights on their NFT studio/token, through 3 main features:
 1. Dashboard showing top 5 performing NFTs of the week (filterable by percentage price change, absolute price change and volume)
 2. Search bar displaying information and performance of a specific NFT token/studio.
-3. Historical predition accuracy rate for each NFT studio.
+3. Historical prediction accuracy rate for each NFT studio.
 
 Note: NFT studio refers to the brand/creator of NFT tokens, an example of which would be the Bored Apt Yacht Club.
 
@@ -19,13 +19,35 @@ Note: NFT studio refers to the brand/creator of NFT tokens, an example of which 
 Front-End - Typescript with Preact <br />
 Back-End - Django, TensorFlow, Rarify API, Heroku
 
-## Problem and Solution
-NFT prices are very volatile and unpredictable, and a large proportion of price movements are determined by sentiment shifts (online hype) rather than fundamental analysis such as in stocks. Unlike well-established online stock price platforms, current NFT price platforms do not provide users with useful insights into price trends other than basic price movements  (such as real-time social media sentiment analysis or celebrity tweets).
+## User Story
+As a user who has heard about the NFT rise, who has heard about the USD$122 billion market size, who has witnessed a dozen friends making 6-figure profits from NFT trading, I am dying to find out what this is all about and how I can profit too.
 
-We aim to scrap data on discussions and mentions of NFT tokens/studios on social media channels (with the most prominent ones being Twitter and Discord), and assign each NFT studio with a sentiment score which will be displayed on the dashboard.
+However upon a basic Google search, sites like openSea provide only basic price trends for NFTs, but I know that to profit consistently, I need a way to jump onto the latest hype before other people discover it.
 
-This way, investors will be better-equipped to make NFT investments since they can now view the top predicted NFTs for next week, top performing NFTs of the current week, as well as search their own NFTs of interest to view the sentiment score, making DogeTTM a very versatile platform for investors to research on NFTs.
+Hence, a site like DogeTTM, with its real-time social media (Twitter) sentiment analysis, will help me uncover the latest buzz in the NFT space, and I can invest before it reaches the mainstream. 
 
+Moreover, through its price prediction tools, I will be able to determine when a crash is coming, or how well my portfolio stacks up in the coming weeks, so I can prime my portfolio to cut loss, as well as double down on winning collections. 
+
+## Problem
+As a user looking to invest and gain deeper insights into the NFT space,  current NFT price platforms do not provide users with useful insights into price trends other than basic price movements  (such as real-time social media sentiment analysis or celebrity tweets). 
+
+1st Problem:
+Most users do not have access to exclusive discord release channels for NFT, and by the time they learn about a rising NFT through news or their social media, its too late to profit. 
+
+2nd Problem:
+NFT space is very volatile, and as in the case of Luna in the crypto space, an investor's portfolio may be wiped out overnight, due to echoing fear among the community and a Domino effect from investors. There is a need on a real-time tracking of fear index (sentiment) in the market.
+
+## Solution and Benefits
+Since NFT prices are very volatile and unpredictable, and a large proportion of price movements are determined by sentiment shifts (online hype) rather than fundamental analysis. We can tap into the power of social media sentiment analysis to gain deeper insights into both price trends of big players, as well as identify up-and-coming collections so that we can invest before it reaches the mainstream.
+
+This way, investors will be better-equipped to make NFT investments since they can now view the top predicted NFTs for next week, top performing NFTs of the current week, as well as search their own NFTs of interest to view the sentiment score, making DogeTTM a very versatile platform for investors to research on NFTs. Secondly, they can also view when the fear index is rising beyond the threshold, and sell accordingly/
+
+
+## Market Validation
+Through thorough preliminary research, we have determined there is no existing free sentiment analysis platform for NFT collections, due in part to the novelty of the NFT space. 
+With the recent yearly double digit growth in NFT market cap, there has been more demand for more advanced analytics tool within the space.
+
+Through polls on online forums (Reddit) and interviews with our peers, we have identified a strong interest in a product that can identify trending NFT collections before they reach the mainstream, and hence we have decided to embark on this project.
 
 ## Features
 ![Orbital Video Presentation](https://user-images.githubusercontent.com/105634117/175895718-18ef378f-db6f-4ea1-97ad-bce9eee2f531.jpg)
@@ -45,11 +67,20 @@ We use simple linear regression algorithm under supervised learning to train our
 
 Architectural Style: For this project, we use a mix of client-server architectural style and n-tier architectural style on the server-side.
 
-Design Approach : We adopt the bottom-up agile design approach by focusing on creating a minimum viable product(MVP) with a basic home page first, then expanding our feature list, starting from individual NFT page, to searchbar, to dashboard, then lastly price prediction model.
-![agile](https://user-images.githubusercontent.com/25603844/175925496-a9435b13-1cf4-4079-bead-4470f53e1530.png)
-
 UML Diagram: 
 ![src_diagram (2)](https://user-images.githubusercontent.com/25603844/175934696-46c957dd-5184-47b2-a60c-4465ba92494e.png)
+
+Design Approach : We adopt the bottom-up agile design approach by focusing on creating a minimum viable product(MVP) with a basic home page first, then expanding our feature list, starting from individual NFT page, to searchbar, to dashboard, then lastly price prediction model.
+
+![agile](https://user-images.githubusercontent.com/25603844/175925496-a9435b13-1cf4-4079-bead-4470f53e1530.png)
+
+UI/UX : We focused on ease of use for users, making it as easy as possible to understand and interact with the features as possible. For example:
+- Home Page is accessible by a simple click of the header logo -> No need for unnecessary routing.
+- Reduced number of pages to just 2 (Dashboard and Single Collection Page). -> Easy navigation and clear structure, minimises navigation and button clicks. 
+- Dashboard information is on a single-page and displayed on click for the default home page. -> No need to renavigate for different data.
+
+Hence, with just 2 main pages and simple workflow, the user design is straightforward and easy to remember for users.
+
 
 ## Problems Encountered 
  
@@ -73,16 +104,7 @@ We also manually tested how the Typescript components interact with one another 
 4) The token metadata page should have a graph showing the price data.
 5) When I click on the Logo at the top left, I should navigate back to the main page.
 Other features, such as changing the price data time range via dropdown, search, sentiment analysis and price prediction, have yet to be implemented and as such are unable to be tested.
-Looking forward, a Continuous Integration (CI) workflow will be implemented to automatically test the code for each push to GitHub. This speeds up testing procedures.
-
-### Setup and Code Security
-1) `.env` files hold sensitive environment variables and `.gitignore` prevents them from being committed, while files that need the variables can still access them
-2) `npm install` and `python -m pip install -r requirements.txt` install the necessary packages
-3) Setting the frontend endpoint in `backend/settings.py > CORS_ALLOWED_ORIGINS` and the backend endpoint in `URLCONFIG.json` allow both to communicate and send data without authentication errors
-
-#### To Be Done: 
-Setup one file to hold all necessary configurations, and manually set ports so that the two can communicate rather than through hardcoding endpoints. Also, set up a Docker so that it can be deployed to production.
-
+Looking forward, a Continuous Integration (CI) workflow will be implemented to automatically test the code for each push to GitHub. This speeds up testing procedures.   
 ## To Run
 1) Setup a directory `directory_name` on your local machine. In your terminal, change directory to `directory_name` as specified earlier, and `git clone` this package there.
 
@@ -136,6 +158,7 @@ So far we have accomplished:
 
 To-Do for Milestone 3:
 - Finish training our price prediction model and integrate it into our code.
+- Debug and finish our search bar feature.
 - Test different ML models (linear regression, CNN, RNN) and document their respective accuracy rates.
 - Optimise our fetch requests for NFT data for faster loadtime.
 - User authentication system and possibly a personal wallet 
