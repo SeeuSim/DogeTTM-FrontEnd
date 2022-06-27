@@ -48,8 +48,7 @@ Design Approach : We adopt the bottom-up agile design approach by focusing on cr
 ![agile](https://user-images.githubusercontent.com/25603844/175925496-a9435b13-1cf4-4079-bead-4470f53e1530.png)
 
 UML Diagram: 
-
-User-flow Diagram:
+![src_diagram (2)](https://user-images.githubusercontent.com/25603844/175934696-46c957dd-5184-47b2-a60c-4465ba92494e.png)
 
 
 ## Testing and Evaluation 
