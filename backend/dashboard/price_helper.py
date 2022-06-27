@@ -1,18 +1,19 @@
+import json
 import os
-import random
+from datetime import datetime, timedelta
 from decimal import Decimal
 from operator import itemgetter
-
-from datetime import datetime, timedelta
-import json
-import flair
-# import collections
+from urllib import response
 
 import dotenv
+import flair
 import matplotlib.pyplot as plt
-from numpy import add
 import pandas as pd
 import requests
+from numpy import add
+
+# import collections
+
 
 dotenv.load_dotenv("../frontend/.env")
 RARIFY_API_KEY:str = os.environ.get('RARIFY_API_KEY')
@@ -33,30 +34,6 @@ def format_id(tokenID:int) -> str:
   if len(hexID) % 2 == 0:
     return hexID[2:]
   return hexID.replace('x', '')
-
-
-def getart(address:str, tokens:int) -> str:
-  tokenid = abs(tokens - random.randint(0, 100))
-  hashed_id = format_id(tokenid)
-  endpoint = f"https://api.rarify.tech/data/tokens/{address}:{hashed_id}"
-
-  response = requests.get(endpoint, headers=RARIFY_header).json()
-  if 'data' in response and 'image_url' in response['data']['attributes']:
-      return response['data']['attributes']['image_url']
-  return ""
-
-
-def get_price_history(address, coin, time_period):
-  """Retrieves the price history for a collection in 24h, 7d, 30d, all_time"""
-  # 24h: 24 entries 1h apart
-  # 7d: 7 entries 1d apart
-  # 30d: 30 entries 1d apart
-  endpoint = f"https://api.rarify.tech/data/contracts/{coin}:{address[2:]}/insights/{time_period}"
-
-  response = requests.get(endpoint, headers=RARIFY_header).json()
-  if 'errors' in response:
-    return response
-  return response['included'][-1]['attributes']['history']
 
 
 def token_trades(address:str, coin:str, id:int, time_period:str) -> dict or list:
@@ -187,6 +164,43 @@ def get_top(param:str, limit:int) -> dict:
   return {"data":sorted(out, key=lambda x: Decimal(x[param][:-4]), reverse=True)}
 
 
+def getContract(contract_address:str) -> dict:
+  endpoint = f'https://api.rarify.tech/data/contracts/{contract_address}'
+  response = requests.get(endpoint, headers=RARIFY_header, params={"include":"metadata"}).json()
+  token_meta = response['data']
+  dsc = ""
+  if "description" in token_meta['attributes']:
+    dsc = token_meta['attributes']['description']
+  return {
+    "address": f"0x{token_meta['attributes']['address']}",
+    "name": token_meta['attributes']['name'],
+    "tokens": token_meta['attributes']['tokens'],
+    "unique_owners": token_meta['attributes']['unique_owners'],
+    "description": dsc,
+    "id": token_meta['id']
+  }
+
+
+def getPriceHistory(contract_address:str, time_period:str):
+  """Gets the price history for the given contract for the specified time period as an array of (x, y) coordinates.
+
+  Parameters
+  ----------
+  contract_address:str
+      The address of the contract as specified by Rarify.
+
+  time_period:str
+      The time period desired. Formats accepted are '24h', '7d', '30d', 'all_time'
+
+  Returns:
+  An array of (x, y) coordinates with x as datetime and y as the price values (avg, min, max, volume)
+  """
+  endpoint = f"https://api.rarify.tech/data/contracts/{contract_address}/insights/{time_period}"
+  response = requests.get(endpoint, headers=RARIFY_header).json()
+  print(response)
+  return {"data": response['included'][-1]['attributes']['history']}
+
+
 def plotTop():
     temp = get_trending(10, '3d')
     tokenName = []
@@ -198,7 +212,6 @@ def plotTop():
         tokenPChange.append(temp[i]['percent_change'])
         tokenVChange.append(temp[i]['volume_change'])
         topRising.append([temp[i]['name'], temp[i]['percent_change'], temp[i]['volume_change']])
-
 
     fig = plt.figure()
     dataArr = sorted(topRising,key=itemgetter(1))

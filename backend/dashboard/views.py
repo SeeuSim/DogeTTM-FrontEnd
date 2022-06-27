@@ -24,3 +24,9 @@ def topRank(request, param:str):
 
 def topTrending(request, period:str):
   return JsonResponse(price_helper.get_trending(10, period))
+
+def getContract(request, contract_id:str):
+  return JsonResponse(price_helper.getContract(contract_id))
+
+def getPriceHistory(request, contract_address:str, time_period:str):
+  return JsonResponse(price_helper.getPriceHistory(contract_address, time_period))

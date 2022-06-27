@@ -24,6 +24,8 @@ urlpatterns = [
     # path('top/<param>', views.topSentiments, name= "topSentiments"),
     # path('top/<param>', views.singleCollection, name= "singleCollection")
     path('toprank/<param>', views.topRank, name="topRank"),
-    path('toptrend/<period>', views.topTrending, name="topTrending")
+    path('toptrend/<period>', views.topTrending, name="topTrending"),
+    path('contracts/<contract_id>', views.getContract, name="contract"),
+    path('history/price/<contract_address>/<time_period>', views.getPriceHistory, name="priceHistory")
 #path TBD
 ]

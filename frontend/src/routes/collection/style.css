@@ -2,8 +2,14 @@
 	padding: 56px 20px;
 	min-height: 100%;
 	width: 100%;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+
+  background: linear-gradient(180deg, #760CFD 0%, rgba(26, 141, 224, 0.55) 99.99%, rgba(24, 151, 222, 0) 100%);
 }
 
 .collection h1{
-  color: black;
+  color: white;
 }

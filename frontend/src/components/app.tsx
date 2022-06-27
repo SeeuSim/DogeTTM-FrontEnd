@@ -9,10 +9,12 @@ import NotFoundPage from '../routes/notfound';
 import Header from './header';
 import { getDefaultProvider } from "ethers";
 import { NftProvider } from "use-nft";
+import * as URLCONFIG from "../../URLCONF.json"
 
+const ETHERSCAN_KEY = URLCONFIG.ETHERSCAN;
 // ETH mainnet alias under this package is "homestead"
 const ethersConfig = {
-    provider: getDefaultProvider("homestead"),
+    provider: getDefaultProvider("homestead", {etherscan:ETHERSCAN_KEY}),
 };
 
 const App: FunctionalComponent = () => {

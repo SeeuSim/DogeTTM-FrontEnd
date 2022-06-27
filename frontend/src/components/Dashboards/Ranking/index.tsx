@@ -60,7 +60,7 @@ const Ranking: FunctionalComponent = () => {
             setRankData(response.data);
             setLoaded(true);
         })
-    }, [rankValue!="trending"]);
+    }, []);
 
     const fetchTrendData = useCallback(() => {
         axios.get<TrendResponse>(`${baseURL}/toptrend/${trendTimeValue}`)
@@ -69,7 +69,7 @@ const Ranking: FunctionalComponent = () => {
             setTrendData(response.data);
             setLoaded(true);
         })
-    }, [rankValue=="trending"])
+    }, [])
 
     const fetchData = () => {
         if (rankValue == "trending") {
@@ -79,7 +79,7 @@ const Ranking: FunctionalComponent = () => {
     }
     useEffect(() => {
         fetchData
-    }, [])
+    }, [rankValue])
 
     const renderTable = (loaded:boolean, value:string) => {
         if (loaded && value == "trending") {
@@ -103,7 +103,7 @@ const Ranking: FunctionalComponent = () => {
                         <NftImage address={row['address']} tokens={row['tokens']} />
                     </td>
                     <td>
-                        <Link path={`/collections/${row['address']}`}>
+                        <Link href={`/collections/${row['id']}`}>
                             {row['name']}
                         </Link>
                     </td>
@@ -142,7 +142,7 @@ const Ranking: FunctionalComponent = () => {
                         <NftImage address={row['address']} tokens={row['tokens']} />
                     </td>
                     <td>
-                        <Link href={`/collections/${row['address']}`}>
+                        <Link href={`/collections/${row['id']}`}>
                             {row['name']}
                         </Link>
                     </td>

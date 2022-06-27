@@ -16,7 +16,10 @@ const NftImage:FunctionalComponent<Props> = (props:Props) => {
     if (loading) return <h1>Loading…</h1>
 
   // nft.error is an Error instance in case of error.
-    if (error || !nft) return <h1>Error.</h1>
+    if (error || !nft) {
+        console.log(error.message);
+        return <h1>Error.</h1>
+    }
 
     return (
         <img class={style.TableImg} src={nft.image} alt=""></img>
