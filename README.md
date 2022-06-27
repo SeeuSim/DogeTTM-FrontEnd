@@ -26,6 +26,7 @@ We aim to scrap data on discussions and mentions of NFT tokens/studios on social
 
 This way, investors will be better-equipped to make NFT investments since they can now view the top predicted NFTs for next week, top performing NFTs of the current week, as well as search their own NFTs of interest to view the sentiment score, making DogeTTM a very versatile platform for investors to research on NFTs.
 
+
 ## Features
 ![Orbital Video Presentation](https://user-images.githubusercontent.com/105634117/175895718-18ef378f-db6f-4ea1-97ad-bce9eee2f531.jpg)
 
@@ -52,8 +53,11 @@ UML Diagram:
 
 ## Problems Encountered 
  
-1. Fitions are very computation-intensive, so resources like images and end data take a long time to load.
-3. Even though the API functions output the correct data format, some NFT tokens are very new, so they are missing in some data values. Fetching code returns incomplete data, and the API call will return an error when we use it for subsequent functions.
+1. Some functions and images are very computation-intensive/resource-intensive, so end data take a long time to load.
+Solution : We implemented async functions wherever possible, changed rendering order/structure to optimise load time, and reduced total number of times the data is routed to the end function, through reviewing the UML class diagram.
+
+2. Even though the API functions output the correct data format, some NFT tokens are very new, so they are missing in some data values. Fetching code returns incomplete data, and the API call will return an error when we use it for subsequent functions.
+Solution : It is not a pressing problem that affects the end user that much, since it constitutes a small and insignificant portion of NFT collections. But we looking into solutions and other APIs, such as OpenSea as a possible API to add to/migrate to.
 
 ## Testing and Evaluation 
 For Milestone 2 we have performed developer testing as well as system testing. For subsequent milestone 3 we will integrate automated testing into our code, with the focus being on behaviour testing using Selenium and Behave in Python.
