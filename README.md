@@ -6,6 +6,20 @@ Team Members: <br />
 Liu Zixin <br />
 Ong Seeu Sim
 
+## Navigation 
+* [Description](#description)
+* [Tech Stack](#tech-stack)
+* [User Story](#user-story)
+* [Problem](#problem)
+* [Solution and Benefits](#solution-and-benefits)
+* [Market Validation](#market-validation)
+* [Features](#features)
+* [Design Principles and Diagrams](#design-principles-and-diagrams)
+* [Problems Encountered](#problems-encountered)
+* [Testing and Evaluation](#testing-and-evaluation)
+* [To Run](#to-run)
+* [Evaluation and Subsequent Plans](#evaluation-and-subsequent-plans)
+
 ## Description
 
 DogeTTM is a webapp that uses social media sentiment analysis to provide NFT investors with price insights on their NFT studio/token, through 3 main features:
