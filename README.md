@@ -51,10 +51,10 @@ UML Diagram:
 ![src_diagram (2)](https://user-images.githubusercontent.com/25603844/175934696-46c957dd-5184-47b2-a60c-4465ba92494e.png)
 
 ## Problems Encountered 
+ 
+1. Fitions are very computation-intensive, so resources like images and end data take a long time to load.
+3. Even though the API functions output the correct data format, some NFT tokens are very new, so they are missing in some data values. Fetching code returns incomplete data, and the API call will return an error when we use it for subsequent functions.
 
-1. AP
-2. Functions are very computation-intensive, so resources like images and end data take a long time 
-3. 
 ## Testing and Evaluation 
 For Milestone 2 we have performed developer testing as well as system testing. For subsequent milestone 3 we will integrate automated testing into our code, with the focus being on behaviour testing using Selenium and Behave in Python.
 
