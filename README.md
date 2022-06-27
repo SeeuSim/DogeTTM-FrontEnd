@@ -40,7 +40,9 @@ NFT space is very volatile, and as in the case of Luna in the crypto space, an i
 ## Solution and Benefits
 Since NFT prices are very volatile and unpredictable, and a large proportion of price movements are determined by sentiment shifts (online hype) rather than fundamental analysis. We can tap into the power of social media sentiment analysis to gain deeper insights into both price trends of big players, as well as identify up-and-coming collections so that we can invest before it reaches the mainstream.
 
-This way, investors will be better-equipped to make NFT investments since they can now view the top predicted NFTs for next week, top performing NFTs of the current week, as well as search their own NFTs of interest to view the sentiment score, making DogeTTM a very versatile platform for investors to research on NFTs. Secondly, they can also view when the fear index is rising beyond the threshold, and sell accordingly/
+This way, investors will be better-equipped to make NFT investments since they can now view the top predicted NFTs for next week, top performing NFTs of the current week, as well as search their own NFTs of interest to view the sentiment score, making DogeTTM a very versatile platform for investors to research on NFTs. 
+
+Secondly, they can also view when the fear index is rising beyond the threshold, and sell accordingly.
 
 
 ## Market Validation
