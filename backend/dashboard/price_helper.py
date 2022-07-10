@@ -17,6 +17,10 @@ import requests
 dotenv.load_dotenv("../frontend/.env")
 RARIFY_API_KEY:str = os.environ.get('RARIFY_API_KEY')
 
+RARIFY_header = {
+      "Authorization": f'Bearer {RARIFY_API_KEY}'
+}
+
 
 def format_price(price:str, currency:str):
   """Prices are in format of 18 decimals"""
@@ -36,10 +40,7 @@ def getart(address:str, tokens:int) -> str:
   hashed_id = format_id(tokenid)
   endpoint = f"https://api.rarify.tech/data/tokens/{address}:{hashed_id}"
 
-  headers = {
-      "Authorization": f'Bearer {RARIFY_API_KEY}'
-  }
-  response = requests.get(endpoint, headers=headers).json()
+  response = requests.get(endpoint, headers=RARIFY_header).json()
   if 'data' in response and 'image_url' in response['data']['attributes']:
       return response['data']['attributes']['image_url']
   return ""
@@ -51,10 +52,8 @@ def get_price_history(address, coin, time_period):
   # 7d: 7 entries 1d apart
   # 30d: 30 entries 1d apart
   endpoint = f"https://api.rarify.tech/data/contracts/{coin}:{address[2:]}/insights/{time_period}"
-  headers = {
-      "Authorization": f'Bearer {RARIFY_API_KEY}'
-  }
-  response = requests.get(endpoint, headers=headers).json()
+
+  response = requests.get(endpoint, headers=RARIFY_header).json()
   if 'errors' in response:
     return response
   return response['included'][-1]['attributes']['history']
@@ -71,10 +70,8 @@ def token_trades(address:str, coin:str, id:int, time_period:str) -> dict or list
     raw_id = raw_id.replace('x', '')
 
   endpoint = f"https://api.rarify.tech/data/tokens/{coin}:{address[2:]}:{raw_id}/insights/{time_period}"
-  headers = {
-      "Authorization": f'Bearer {RARIFY_API_KEY}'
-  }
-  response = requests.get(endpoint, headers=headers).json()
+
+  response = requests.get(endpoint, headers=RARIFY_header).json()
   if 'included' not in response:
     return response
   return response['included'][1]['attributes']['history']
@@ -96,16 +93,14 @@ def find_collections(name:str) -> dict or list:
   }
   """
   endpoint = 'https://api.rarify.tech/data/contracts'
-  headers = {
-      "Authorization": f'Bearer {RARIFY_API_KEY}'
-  }
+
   params = {
       'filter[name]': name
       #'filter[contract]": f'{id_from_contract}',
       #'filter[name]": f'{token_id}'
       #'include': 'metadata'
   }
-  response = requests.get(endpoint, headers=headers, params=params).json()
+  response = requests.get(endpoint, headers=RARIFY_header, params=params).json()
 
   if 'errors' in response:
       return response
@@ -113,11 +108,8 @@ def find_collections(name:str) -> dict or list:
 
 
 def get_trending(limit:int, period:str) -> dict:
+  """periods are '24h', '3d', '7d', '30d', or '90d'"""
   endpoint = 'https://api.rarify.tech/data/contracts'
-  headers = {
-      "Authorization": f'Bearer {RARIFY_API_KEY}'
-  }
-  periods = {'24h', '3d', '7d', '30d', '90d'}
 
   params = {
       'insights_trends.period': period,
@@ -126,7 +118,7 @@ def get_trending(limit:int, period:str) -> dict:
       'page[limit]': limit,
       'filter[has_metadata]': "true"
   }
-  response = requests.get(endpoint, headers=headers, params=params).json()
+  response = requests.get(endpoint, headers=RARIFY_header, params=params).json()
 
   tokens = response['data']
   stats = response['included']
@@ -140,7 +132,7 @@ def get_trending(limit:int, period:str) -> dict:
     if 'name' in token['attributes']:
       nm = token['attributes']['name']
     out.append({
-        "imgurl": getart(id, tokens),
+        'id': id,
         "address": f"0x{token['attributes']['address']}",
         "name": nm,
         "tokens": tokens,
@@ -153,17 +145,26 @@ def get_trending(limit:int, period:str) -> dict:
 
 
 def get_top(param:str, limit:int) -> dict:
+  """Gets the top ranking collections by search parameter.
+
+  Parameters
+  ----------
+  param : str
+      The ranking parameter to search by. Options: 'min_price', 'max_price', 'volume'
+
+  limit : int
+      The positive number of entries to return.
+  """
+
   endpoint = 'https://api.rarify.tech/data/contracts'
-  headers = {
-      "Authorization": f'Bearer {RARIFY_API_KEY}'
-  }
+
   params = {
       'include': 'insights',
       'sort': f'-insights.{param}',
       'page[limit]': limit,
       'filter[has_metadata]': "true"
   }
-  response = requests.get(endpoint, headers=headers, params=params).json()
+  response = requests.get(endpoint, headers=RARIFY_header, params=params).json()
   tokens = response['data']
   stats = response['included']
   out = []
@@ -174,7 +175,7 @@ def get_top(param:str, limit:int) -> dict:
     if 'name' in token['attributes']:
       nm = token['attributes']['name']
     out.append({
-        "imgurl": getart(id, tokens),
+        'id': id,
         "address": f"0x{token['attributes']['address']}",
         "name": nm,
         "tokens": tokens,

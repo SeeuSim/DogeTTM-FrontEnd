@@ -7,19 +7,28 @@ import Home from '../routes/home';
 import Profile from '../routes/profile';
 import NotFoundPage from '../routes/notfound';
 import Header from './header';
+import { getDefaultProvider } from "ethers";
+import { NftProvider } from "use-nft";
+
+// ETH mainnet alias under this package is "homestead"
+const ethersConfig = {
+    provider: getDefaultProvider("homestead"),
+};
 
 const App: FunctionalComponent = () => {
     return (
-        <div id="preact_root">
-            <Header />
-            <Router>
-                <Route path="/" component={Home} />
-                <Route path="/profile/" component={Profile} user="me" />
-                <Route path="/profile/:user" component={Profile} />
-                <Route path="/collections/:collection" component={Collection} />
-                <NotFoundPage default />
-            </Router>
-        </div>
+        <NftProvider fetcher={["ethers", ethersConfig]}>
+            <div id="preact_root">
+                <Header />
+                <Router>
+                    <Route path="/" component={Home} />
+                    <Route path="/profile/" component={Profile} user="me" />
+                    <Route path="/profile/:user" component={Profile} />
+                    <Route path="/collections/:contract_address" component={Collection} />
+                    <NotFoundPage default />
+                </Router>
+            </div>
+        </NftProvider>
     );
 };
 

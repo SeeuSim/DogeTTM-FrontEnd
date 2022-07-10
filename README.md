@@ -26,7 +26,9 @@ We aim to scrap data on discussions and mentions of NFT tokens/studios on social
 
 This way, investors will be better-equipped to make NFT investments since they can now view the top predicted NFTs for next week, top performing NFTs of the current week, as well as search their own NFTs of interest to view the sentiment score, making DogeTTM a very versatile platform for investors to research on NFTs.
 
-## Features Explanation
+## Features
+![Orbital Video Presentation](https://user-images.githubusercontent.com/105634117/175895718-18ef378f-db6f-4ea1-97ad-bce9eee2f531.jpg)
+
 Dashboard:
 Using a Django backend, our app will scrap data on social media platforms Twitter and Reddit and categorise tweets based on NFT collections and assign a sentiment score. Top rated NFTs will be pushed to the top of the dashboard, allowing investors to catch opportunities as soon as they sizzle.
 
@@ -37,6 +39,20 @@ The webapp uses both AJAX and server-rendered HTML to communicate frontend(clien
 
 Price Prediction Model:
 We use simple linear regression algorithm under supervised learning to train our price prediction model, with sentiment scores over time and price over time as our parameters.
+
+## Design Principles and Diagrams
+
+Architectural Style: For this project, we use a mix of client-server architectural style and n-tier architectural style on the server-side.
+
+Design Approach : We adopt the bottom-up agile design approach by focusing on creating a minimum viable product(MVP) with a basic home page first, then expanding our feature list, starting from individual NFT page, to searchbar, to dashboard, then lastly price prediction model.
+
+UML Diagram: 
+
+User-flow Diagram:
+
+
+## Testing and Evaluation 
+
 
 ## To Run
 1) Setup a directory `directory_name` on your local machine. In your terminal, change directory to `directory_name` as specified earlier, and `git clone` this package there.
@@ -79,3 +95,5 @@ npm run dev
 Save the network endpoint and paste it in CORS_ALLOWED_ORIGINS under `directory_name/backend/backend/settings.py`
 
 9) Navigate to the frontend network endpoint in your browser of choice.
+
+## Future Plans

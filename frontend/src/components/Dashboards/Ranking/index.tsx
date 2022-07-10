@@ -1,13 +1,15 @@
 import axios from 'axios';
 import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
+import { Link } from 'preact-router/match';
+import NftImage from '../../Image';
 import style from "./style.css";
 import * as URLCONFIG from "../../../../URLCONF.json";
 
 const baseURL = URLCONFIG.endpoint;
 
 interface TrendingData {
-    "imgurl":string,
+    "id":string,
     "address":string,
     "name":string,
     "tokens":string,
@@ -17,7 +19,7 @@ interface TrendingData {
 }
 
 interface TopRankData {
-    "imgurl":string,
+    "id":string,
     "address":string,
     "name":string,
     "tokens":string,
@@ -97,11 +99,13 @@ const Ranking: FunctionalComponent = () => {
             const raw = values['data'];
             rows = raw.map<h.JSX.Element>((row) => (
                 <tr>
-                    <td><img class={style.TableImg} src={row['imgurl']}></img></td>
                     <td>
-                        <a href={`/collections/${row['address']}`}>
+                        <NftImage address={row['address']} tokens={row['tokens']} />
+                    </td>
+                    <td>
+                        <Link path={`/collections/${row['address']}`}>
                             {row['name']}
-                        </a>
+                        </Link>
                     </td>
                     <td>{row['volume_change']}</td>
                     <td>{row['percent_change']}</td>
@@ -134,11 +138,13 @@ const Ranking: FunctionalComponent = () => {
             const rawRows = raw['data']
             rows = rawRows.map<h.JSX.Element>((row) => (
                 <tr>
-                    <td><img class={style.TableImg} src={row['imgurl']}></img></td>
                     <td>
-                        <a href={`/collections/${row['address']}`}>
+                        <NftImage address={row['address']} tokens={row['tokens']} />
+                    </td>
+                    <td>
+                        <Link href={`/collections/${row['address']}`}>
                             {row['name']}
-                        </a>
+                        </Link>
                     </td>
                     <td>{row[rankValue=="min_price"
                                 ? "min_price"

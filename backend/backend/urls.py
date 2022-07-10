@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 from dashboard import views
-# from dashboard import views
 
 urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),  # new

@@ -125,6 +125,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
- "http://192.168.1.7:8080"
+ "http://192.168.1.7:8080",
+ "http://10.249.211.182:8080"
 ]
+
 LOGIN_REDIRECT_URL = "/"
