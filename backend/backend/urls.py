@@ -16,16 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 
-from dashboard import views
-
 urlpatterns = [
-    path("accounts/", include("django.contrib.auth.urls")),  # new
+    path('admin/clearcache/', include('clearcache.urls')),
     path('admin/', admin.site.urls),
-    # path('top/<param>', views.topSentiments, name= "topSentiments"),
-    # path('top/<param>', views.singleCollection, name= "singleCollection")
-    path('toprank/<param>', views.topRank, name="topRank"),
-    path('toptrend/<period>', views.topTrending, name="topTrending"),
-    path('contracts/<contract_id>', views.getContract, name="contract"),
-    path('history/price/<contract_address>/<time_period>', views.getPriceHistory, name="priceHistory")
-#path TBD
+    path('dashboard/', include('dashboard.urls')),
+    path('nft/', include('NFT.urls'))
 ]
