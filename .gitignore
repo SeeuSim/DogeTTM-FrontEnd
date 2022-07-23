@@ -3,5 +3,5 @@ node_modules
 /*.log
 .DS_Store
 frontend/.env
-backend/__pycache__
+__pycache__
 .env

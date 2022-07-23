@@ -63,25 +63,34 @@ def get_top_collections_client(data:JsonResponse, metric:str) -> list:
         "by_sales_volume": 'salesVolume'
     }
     key = result_keys[metric]
-    client_list = json.loads(data.content.decode())['collections'][:10]
+    client_list = list(filter(lambda token: token['contractName'] != "",json.loads(data.content.decode())['collections']))[:10]
 
-    return list(map(lambda token: [get_contract_art(token['contractAddress']), token['contractName'], token[key]], client_list))
+    return list(map(
+      lambda token: {
+        "art": get_contract_art(token['contractAddress']),
+        "name": token['contractName'],
+        "stat": token[key]
+        }, client_list))
 
-def process(image_uri:str, image_mimeType:str) -> tuple:
+def get_art(image_uri:str, image_mimeType:str) -> dict:
     if "ipfs" in image_uri[:10]:
-        return (image_uri.replace("ipfs://", "ipfs.io/ipfs/"), "url")
+        return {"image": image_uri.replace("ipfs://", "ipfs.io/ipfs/"),
+                "type": "url" }
     elif 'base64' in image_mimeType:
-        return (urlopen(
+        return {"image": urlopen(
             f'data:{image_mimeType}, {image_uri}')
-            .read().decode().split(",")[-1], "raw")
+            .read().decode().split(",")[-1],
+            "type": "raw"}
     elif 'data' in image_uri[:10]:
-        return (urlopen(image_uri).read().decode(), "raw")
+        return {"image": urlopen(image_uri).read().decode(),
+                "type": "raw"}
 
     else:
-        return (image_uri, "url")
+        return {"image": image_uri,
+                "type":  "url"}
 
 
-def get_contract_art(contract_address:str) -> tuple:
+def get_contract_art(contract_address:str) -> dict:
     mnemonic_endpoint = f"https://ethereum.rest.mnemonichq.com/tokens/v1beta1/by_contract/{contract_address}"
     param = {
         "limit": "10",
@@ -95,15 +104,16 @@ def get_contract_art(contract_address:str) -> tuple:
     if "tokens" in data:
         data = data['tokens']
         for token in data:
-            if "metadata" in token and "image" in token['metadata'] and token['metadata']['image']:
+            if "metadata" in token and token['metadata'] and "image" in token['metadata'] and token['metadata']['image']:
                 image['uri'] = token['metadata']['image']['uri']
                 image['mimeType'] = token['metadata']['image']['mimeType']
                 break
 
     if image['uri'] and image['mimeType']:
-        return process(image['uri'], image['mimeType'])
+        return get_art(image['uri'], image['mimeType'])
     else:
-        return ("", "url")
+        return {"image": "",
+                "type": "url"}
 
 
 
