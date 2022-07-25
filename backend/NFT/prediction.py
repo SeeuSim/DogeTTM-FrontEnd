@@ -28,6 +28,6 @@ def getNextWeekPriceIncrease(arr): #percentage increase for next n days, n being
         output.append(price_incr)
     return output
 
-testArr = [0.2,0.7, -0.9, -0.8, 0.5]
+#testArr = [0.2,0.7, -0.9, -0.8, 0.5]
 #print(getNextDayPriceIncrease(testArr))
-print(getNextWeekPriceIncrease(testArr))
+#print(getNextWeekPriceIncrease(testArr))
