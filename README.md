@@ -201,12 +201,15 @@ What we have accomplished for Milestone 2:
 
 What we have accomplished for Milestone 3:
 - Finish training our price prediction model and integrate it into our code.
-- Debug and finish our search bar feature.
 - Test different ML models (linear regression, CNN, RNN) and pick an optimal one
 - Optimise our fetch requests for NFT data for faster loadtime.
 - CSS styling
 
+However, please do note that some url mappings for frontend is broken, hence the JSON responses for sentiment and prediction are not visibly reflected on the frontend side. We have been trying to fix this to the best of our abilities, and will update here once it is fixed.
+For assessment on price prediction, please run predict.py and train.py under backend/NFT in your terminal and see the results.
+
 Additional features/touch-up we would like to add before Splashdown:
+- Fix urlmapping for frontend 
 - Refining the machine learning to be even more accurate
 - Add a personal wallet
 - Further CSS styling
