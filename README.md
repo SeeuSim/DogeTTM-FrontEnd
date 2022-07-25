@@ -1,6 +1,6 @@
 # NUS Orbital'22 DogeTTM Overview
 
-A project created under NUS module CP2106: Independent Software Development Project (Gemini Level looking to upgrade to Apollo 11).
+A project created under NUS module CP2106: Independent Software Development Project (Apollo 11).
 
 Team Members: <br />
 Liu Zixin <br />
@@ -9,11 +9,12 @@ Ong Seeu Sim
 ## Navigation 
 * [Description](#description)
 * [Tech Stack](#tech-stack)
-* [User Story](#user-story)
+* [Motivation](#motivation)
 * [Problem](#problem)
 * [Solution and Benefits](#solution-and-benefits)
 * [Market Validation](#market-validation)
 * [Features](#features)
+* [Price Prediction Model](#price-prediction-model)
 * [Design Principles and Diagrams](#design-principles-and-diagrams)
 * [Problems Encountered](#problems-encountered)
 * [Testing and Evaluation](#testing-and-evaluation)
@@ -33,7 +34,7 @@ Note: NFT studio refers to the brand/creator of NFT tokens, an example of which 
 Front-End - Typescript with Preact <br />
 Back-End - Django, TensorFlow, Rarify API, Heroku
 
-## User Story
+## Motivation
 As a user who has heard about the NFT rise, who has heard about the USD$122 billion market size, who has witnessed a dozen friends making 6-figure profits from NFT trading, I am dying to find out what this is all about and how I can profit too.
 
 However upon a basic Google search, sites like openSea provide only basic price trends for NFTs, but I know that to profit consistently, I need a way to jump onto the latest hype before other people discover it.
@@ -77,7 +78,26 @@ Search Bar:
 The webapp uses server-rendered HTML to communicate frontend(client webapp) to Django backend (dashboard).
 
 Price Prediction Model:
-We use simple linear regression algorithm under supervised learning to train our price prediction model, with sentiment scores over time and price over time as our parameters.
+We use LSTM algorithm to train our price prediction model, with sentiment scores over time and price over time (one step up) as our parameters.
+
+## Price Prediction Model:
+Choosing of Learning Algorithm:
+According to a 2018 ![report](https://journalofbigdata.springeropen.com/articles/10.1186/s40537-017-0111-6#Sec21) titled "Big Data: Deep Learning for financial sentiment analysis", the Pearson Correlation Coefficient between a stock price and a general user’s sentiment is equal to 0.05, which means that only 53% of the time are users able to predict future stock prices correctly. With the use of deep learning models in sentiment analysis, the percentage can rise to up to 75%.
+![comparison](https://user-images.githubusercontent.com/25603844/180782877-da9ec8b1-71b1-4adc-b901-959edf045c70.PNG)
+
+
+In the analysis, Convolutional Neural Network (CNN) model had the best performance, followed by LSTM (based of RNN), Logistic Regression then lastly Doc2Vec. 
+As CNN is convolutional in nature and requires a very specifically transformed set of inputs, we opted for the second best performing model LSTM. The difference between LSTM and RNN is that LSTM effectively resolves the vanishing gradient problem of RNN, where recent inputs are weighted higher. Hence accounting for ease of data processing and performance, we opted for LSTM as our machine learning model. 
+
+Data Collecting and Processing:
+
+For the top 500 NFT collections, we collect daily price data over the past 7 days (due to a 7-day limit by the twitter search API), and append it to a priceArray. At every day iterated for each token, we call a function to get the twitter sentiment for that day (value from -1 to 1), and append it to a sentimentArr. 
+We then clean arrays with insufficient data (as some collections do not have data for a field on that day), and transform it into a one-dimensional numpy array, and normalise the price to (-1 to 1).
+
+Model training and prediction:
+
+We have 2 separate files for model training and prediction, under backend/train.py and backend/prediction.py. Everyday we feed new data to train.py, and it trains the model using sentimentArr as X variable, and priceArr (one day ahead) as Y variable, then eventually it stores the trained model as "name.h5", with h5 being a model extension.
+Then, in prediction.py, we load up the model and predict the next day price increase (in percentage), with the sentiment score as input. If an array of sentiment scores are provided, then the next day price increase will be more accurate. 
 
 ## Design Principles and Diagrams
 
@@ -86,9 +106,9 @@ Architectural Style: For this project, we use a mix of client-server architectur
 UML Diagram: 
 ![src_diagram (2)](https://user-images.githubusercontent.com/25603844/175934696-46c957dd-5184-47b2-a60c-4465ba92494e.png)
 
-Design Approach : We adopt the bottom-up agile design approach by focusing on creating a minimum viable product(MVP) with a basic home page first, then expanding our feature list, starting from individual NFT page, to searchbar, to dashboard, then lastly price prediction model.
+Design Approach : We adopt the waterfall design approach by focusing on creating a basic home page first, then expanding our feature list, starting from individual NFT page, to searchbar, to dashboard, then lastly price prediction model.
 
-![agile](https://user-images.githubusercontent.com/25603844/175925496-a9435b13-1cf4-4079-bead-4470f53e1530.png)
+![waterfall](https://user-images.githubusercontent.com/25603844/180778975-bd4f8a2e-39c1-404a-a48c-c8ac09f4d4bd.jpg)
 
 UI/UX : We focused on ease of use for users, making it as easy as possible to understand and interact with the features as possible. For example:
 - Home Page is accessible by a simple click of the header logo -> No need for unnecessary routing.
@@ -103,13 +123,19 @@ Hence, with just 2 main pages and simple workflow, the user design is straightfo
 1. Some functions and images are very computation-intensive/resource-intensive, so end data take a long time to load.
 Solution : We implemented async functions wherever possible, changed rendering order/structure to optimise load time, and reduced total number of times the data is routed to the end function, through reviewing the UML class diagram.
 
-2. Even though the API functions output the correct data format, some NFT tokens are very new, so they are missing in some data values. Fetching code returns incomplete data, and the API call will return an error when we use it for subsequent functions.
-Solution : It is not a pressing problem that affects the end user that much, since it constitutes a small and insignificant portion of NFT collections. But we looking into solutions and other APIs, such as OpenSea as a possible API to add to/migrate to.
+2. Even though the API functions output the correct data format, some NFT tokens are very new, so they are missing in some data values. Fetching code returns incomplete data, and the API call will return an error when we use it for subsequent functions. For the ML models, we had to spend a lot of time debugging the data processing and cleaning, because the input were missing in a lot of fields and we had to clean, reshape and transform it by numpy standards.
+
+Solution : We implemented functions such as clean(), and have data integrity check when inserting/updating the database to ensure that incoming data is complete.
+
 
 ## Testing and Evaluation 
-For Milestone 2 we have performed developer testing as well as system testing. For subsequent milestone 3 we will integrate automated testing into our code, with the focus being on behaviour testing using Selenium and Behave in Python.
+For Milestone 2 we have performed developer testing as well as system testing. For subsequent milestone 3 we have integrated unit testing for Django models into our code.
 
-During milestone 2, we performed installation and set-up on 4 different OS machines (Windows, Linux, Mac, Ubuntu), and updated the dependencies and settings to suit all machines, as well as updating README to be OS-independent.
+For milestone 3, we added unit test cases for the model classes, testing interactions with the database through methods like create(), delete(), and update() and asserting the results. 
+### Example Testcases:
+1) When I update the collection object, querying that specific field should give me the updated value.
+2) When I create a duplicate collection or datapoint object, the new entry should be unable to be added, and an error message will show up regarding the duplicate.
+3) When I delete the object, it will no longer be queried.
 
 We also manually tested how the Typescript components interact with one another and with the system as a whole, whether the pages are routed correctly; as well as testing the input from the fetch API to the output graphs and JSON objects displayed at the end.
 
@@ -119,8 +145,7 @@ We also manually tested how the Typescript components interact with one another 
 3) When I click on the collection name hyperlink, I should navigate to a page displaying the token metadata.
 4) The token metadata page should have a graph showing the price data.
 5) When I click on the Logo at the top left, I should navigate back to the main page.
-Other features, such as changing the price data time range via dropdown, search, sentiment analysis and price prediction, have yet to be implemented and as such are unable to be tested.
-Looking forward, a Continuous Integration (CI) workflow will be implemented to automatically test the code for each push to GitHub. This speeds up testing procedures.   
+
 ## To Run
 1) Setup a directory `directory_name` on your local machine. In your terminal, change directory to `directory_name` as specified earlier, and `git clone` this package there.
 
@@ -164,7 +189,7 @@ Save the network endpoint and paste it in CORS_ALLOWED_ORIGINS under `directory_
 9) Navigate to the frontend network endpoint in your browser of choice.
 
 ## Evaluation and Subsequent Plans
-So far we have accomplished: 
+What we have accomplished for Milestone 2:
 - Typescript preact frontend and Django backend development from scratch for a functional MVP.
 - Backend sentiment analysis functions.
 - Backend data processing functions for NFT prices, volume, trends against sentiment. 
@@ -172,10 +197,14 @@ So far we have accomplished:
 - API call functions for NFT data and routing from backend to frontend.
 - Graphing functions
 
-To-Do for Milestone 3:
+What we have accomplished for Milestone 3:
 - Finish training our price prediction model and integrate it into our code.
 - Debug and finish our search bar feature.
-- Test different ML models (linear regression, CNN, RNN) and document their respective accuracy rates.
+- Test different ML models (linear regression, CNN, RNN) and pick an optimal one
 - Optimise our fetch requests for NFT data for faster loadtime.
-- User authentication system and possibly a personal wallet 
 - CSS styling
+
+Additional features/touch-up we would like to add before Splashdown:
+- Refining the machine learning to be even more accurate
+- Add a personal wallet
+- Further CSS styling

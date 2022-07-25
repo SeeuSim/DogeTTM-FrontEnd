@@ -3,9 +3,10 @@ import tensorflow as tf
 from tensorflow import keras
 from keras.models import load_model
 
+
 def predict(input):
     #Use relative path for VSCode
-    model = load_model('C:/Users/Liu Zixin/Documents/GitHub/DogeTTM-FrontEnd/backend/DogeTest2.h5')
+    model = load_model('../DogeTest2.h5')
     prediction = model.predict(input)
     return prediction
 
