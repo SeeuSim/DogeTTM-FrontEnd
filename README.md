@@ -160,6 +160,8 @@ Proceed to `activate` the virtual environment using the specific system command 
 4) Change Directory to the `directory_name/backend`. Then install the Python packages via this command:
 ```
 python -m pip install -r requirements.txt
+
+python -m nltk.downloader vader_lexicon
 ```
 Should any of the packages fail to install, the remaining packages may/may not be installed and the command may need to be re-run after fixing the issues highlighted.
 
