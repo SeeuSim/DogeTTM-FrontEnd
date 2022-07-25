@@ -38,9 +38,6 @@ API_key = os.environ.get('TWITTER_API_KEY')
 API_Secret = os.environ.get('TWITTER_API_SECRET')
 Bearer_Token = os.environ.get('TWITTER_BEARER_TOKEN')
 RARIFY_API_KEY = os.environ.get('RARIFY_API_KEY')
-TWITTER_API_KEY="dSnZQuCPMVQfCXGhhgWJ6qs8s"
-TWITTER_API_SECRET="AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
-TWITTER_BEARER_TOKEN="AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F"
 
 search_url = "https://api.twitter.com/2/tweets/search/recent"
 
@@ -54,7 +51,6 @@ query_params = {'query': '(name) (lang:en)',
 
 #Step 1: Define function that converts address into name
 def get_NFT_name(address:str):
-    RARIFY_API_KEY="1959b00b-435b-4c27-a1b7-66168414d0dc"
     address = "ethereum:" + address
     endpoint = f'https://api.rarify.tech/data/contracts/{address}'
     headers = {
@@ -140,7 +136,7 @@ def train(input):
 #Load the 24/07 500tokens 7d file here
 #dailyTraining.json = mq.get_top_collections('by_sales_volume', '7d')
 model = train("C:/Users/Liu Zixin/Documents/GitHub/DogeTTM-FrontEnd/backend/NFT/test.json")
-model = train(dailyTraining.json)
+# model = train(dailyTraining.json)
 
 testInput = np.array([0,5,0.2,-0.9,0.7,0])
 print(model.predict(testInput))
