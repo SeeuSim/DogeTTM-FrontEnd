@@ -7,5 +7,5 @@ urlpatterns = [
     path('<metric>/<time_period>/', views.top_collections, name="Top Collections"),
     path('client/<metric>/<time_period>',
         views.top_collections_client, name="Top Collections Client"),
-    path('array', lambda request: JsonResponse([1, 2, 3], safe=False), name="Test Array")
+    # path('array', lambda request: JsonResponse([1, 2, 3], safe=False), name="Test Array")
 ]
