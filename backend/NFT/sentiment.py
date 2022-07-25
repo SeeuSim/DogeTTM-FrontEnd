@@ -1,14 +1,20 @@
-import mnemonic_query.py
-
+import mnemonic_query
 import requests
-from datetime import datetime, timedelta
 import os
+import datetime
+import timedelta
+import requests
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import sentiment as stm
+import tensorflow as tf
 import json
 import collections
 import numpy as np
+import pandas as pd
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
-import operator
 
 API_key = os.environ.get('TWITTER_API_KEY')
 API_Secret = os.environ.get('TWITTER_API_SECRET')
@@ -122,11 +128,11 @@ def getPastSentimentExact(name, time):
   endpoint = 'https://api.twitter.com/2/tweets/search/recent'
   headers = {'authorization': f'Bearer {Bearer_Token}'}
   dtformat = '%Y-%m-%dT%H:%M:%SZ'
-  parsedTime = datetime.strptime(time, dtformat)
-  parsedTime = parsedTime + timedelta(hours=24) #to overcome twitter API 7 days limit
-  endTime = parsedTime + timedelta(hours=24)
-  endTime = datetime.strftime(endTime, dtformat)
-  time = datetime.strftime(parsedTime, dtformat)
+  parsedTime = datetime.datetime.strptime(time, dtformat)
+  parsedTime = parsedTime + datetime.timedelta(hours=47) #to overcome twitter API 7 days limit
+  endTime = parsedTime + datetime.timedelta(hours=24)
+  endTime = datetime.datetime.strftime(endTime, dtformat)
+  time = datetime.datetime.strftime(parsedTime, dtformat)
   query_params['start_time'] = time
   query_params['end_time'] = endTime
 
