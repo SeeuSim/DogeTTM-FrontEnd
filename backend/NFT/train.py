@@ -78,7 +78,7 @@ def loadData(file):
     nowt = datetime.datetime.strftime(nowtime, dtformat)
     sentimentArr = []
     priceArr = []
-    for i in range(20):    #per token
+    for i in range(70):    #per token
         address = df[i]['contractAddress']
         try:
             name = get_NFT_name(address)
@@ -94,8 +94,6 @@ def loadData(file):
                 sentiment = stm.getPastSentimentExact(name, past)
                 price = float(data[j]['avg'])
                 price = float(("{:.4f}".format(price)))
-                print(price)
-                print(sentiment[0])
                 tempSentimentArr.append(sentiment[0])
                 tempPriceArr.append(price)
         except:
@@ -125,26 +123,17 @@ def train(input):
     sentimentArr, priceArr = loadData(input)
     sentimentArr = clean(sentimentArr)
     priceArr = clean(priceArr)
-    print("sentiment arr")
-    print(sentimentArr)
-    print("price arr")
-    print(priceArr)
+
     for i in range(len(sentimentArr)):
-        try:
-            X = np.array(sentimentArr[i])
-            Y = np.array(priceArr[i])
-            X = X.reshape(-1,1)
-            Y = Y.reshape(0,1)
-            #Normalising price data to -1,1 (in terms of percentage)
-            scaler = MinMaxScaler(feature_range=(-1, 1))
-            Y = scaler.fit_transform(Y)
-            print(X)
-            print(Y)
-            #Train data
-            model.fit(X, Y, epochs=10, batch_size=1, verbose=2)
-        except:
-            print("Line skipped due to insufficient data")
-            continue
+        X = np.array(sentimentArr[i])
+        Y = np.array(priceArr[i])
+        X = X.reshape(-1,1)
+        Y = Y.reshape(-1,1)
+        #Normalising price data to -1,1 (in terms of percentage)
+        scaler = MinMaxScaler(feature_range=(-1, 1))
+        Y = scaler.fit_transform(Y)
+        #Train data
+        model.fit(X, Y, epochs=10, batch_size=1, verbose=2)
     return model
 
 #LOad the 24/07 500tokens 7d file here
@@ -152,4 +141,4 @@ model = train("C:/Users/Liu Zixin/Documents/GitHub/DogeTTM-FrontEnd/backend/NFT/
 #testInput = np.array([0,5,0.2,-0.9,0.7,0])
 #print(model.predict(testInput))
 
-model.save("DogeTest1.h5")
+model.save("DogeTest2.h5")
