@@ -19,6 +19,7 @@ from tensorflow.keras.layers import Dense
 from tensorflow.keras.layers import LSTM
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
+#from .dashboard import mnemonic_query as mq
 
 """
 Step 1 -> Define get_NFT_name(str contract address) function that gets NFT name based on contract
@@ -130,15 +131,18 @@ def train(input):
         X = X.reshape(-1,1)
         Y = Y.reshape(-1,1)
         #Normalising price data to -1,1 (in terms of percentage)
-        scaler = MinMaxScaler(feature_range=(-1, 1))
+        scaler = MinMaxScaler(feature_range=(0, 1))
         Y = scaler.fit_transform(Y)
         #Train data
         model.fit(X, Y, epochs=10, batch_size=1, verbose=2)
     return model
 
-#LOad the 24/07 500tokens 7d file here
+#Load the 24/07 500tokens 7d file here
+#dailyTraining.json = mq.get_top_collections('by_sales_volume', '7d')
 model = train("C:/Users/Liu Zixin/Documents/GitHub/DogeTTM-FrontEnd/backend/NFT/test.json")
-#testInput = np.array([0,5,0.2,-0.9,0.7,0])
-#print(model.predict(testInput))
+model = train(dailyTraining.json)
+
+testInput = np.array([0,5,0.2,-0.9,0.7,0])
+print(model.predict(testInput))
 
 model.save("DogeTest2.h5")

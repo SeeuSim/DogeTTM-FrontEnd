@@ -105,6 +105,7 @@ def getPastSentiment(name, time):
   headers = {'authorization': f'Bearer {Bearer_Token}'}
 
   dtformat = '%Y-%m-%dT%H:%M:%SZ'
+
   def time_travel(now, mins):
       now = datetime.strptime(now, dtformat)
       back_in_time = now - timedelta(minutes=mins)
