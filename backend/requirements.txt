@@ -27,3 +27,19 @@ sqlparse==0.4.2
 tokenizers==0.12.1
 urllib3==1.26.9
 wcwidth==0.2.5
+beautifulsoup4
+django-clearcache
+django-environ
+django-extensions
+psycopg2
+timedelta
+numpy
+nltk
+matplotlib
+keras
+sklearn
+pandas
+
+# CHOOSE ONE (macos for mac):
+# tensorflow
+tensorflow-macos
