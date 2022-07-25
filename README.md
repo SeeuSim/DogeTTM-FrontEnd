@@ -1,6 +1,6 @@
 # NUS Orbital'22 DogeTTM Overview
 
-A project created under NUS module CP2106: Independent Software Development Project (Gemini Level looking to upgrade to Apollo 11).
+A project created under NUS module CP2106: Independent Software Development Project (Apollo 11).
 
 Team Members: <br />
 Liu Zixin <br />
@@ -120,10 +120,10 @@ Hence, with just 2 main pages and simple workflow, the user design is straightfo
 1. Some functions and images are very computation-intensive/resource-intensive, so end data take a long time to load.
 Solution : We implemented async functions wherever possible, changed rendering order/structure to optimise load time, and reduced total number of times the data is routed to the end function, through reviewing the UML class diagram.
 
-2. Even though the API functions output the correct data format, some NFT tokens are very new, so they are missing in some data values. Fetching code returns incomplete data, and the API call will return an error when we use it for subsequent functions.
-Solution : It is not a pressing problem that affects the end user that much, since it constitutes a small and insignificant portion of NFT collections. But we looking into solutions and other APIs, such as OpenSea as a possible API to add to/migrate to.
+2. Even though the API functions output the correct data format, some NFT tokens are very new, so they are missing in some data values. Fetching code returns incomplete data, and the API call will return an error when we use it for subsequent functions. For the ML models, we had to spend a lot of time debugging the data processing and cleaning, because the input were missing in a lot of fields and we had to clean, reshape and transform it by numpy standards.
 
-3. 
+Solution : We implemented functions such as clean(), and have data integrity check when inserting/updating the database to ensure that incoming data is complete.
+
 
 ## Testing and Evaluation 
 For Milestone 2 we have performed developer testing as well as system testing. For subsequent milestone 3 we have integrated unit testing for Django models into our code.
@@ -142,8 +142,7 @@ We also manually tested how the Typescript components interact with one another 
 3) When I click on the collection name hyperlink, I should navigate to a page displaying the token metadata.
 4) The token metadata page should have a graph showing the price data.
 5) When I click on the Logo at the top left, I should navigate back to the main page.
-Other features, such as changing the price data time range via dropdown, search, sentiment analysis and price prediction, have yet to be implemented and as such are unable to be tested.
-Looking forward, a Continuous Integration (CI) workflow will be implemented to automatically test the code for each push to GitHub. This speeds up testing procedures.   
+
 ## To Run
 1) Setup a directory `directory_name` on your local machine. In your terminal, change directory to `directory_name` as specified earlier, and `git clone` this package there.
 
@@ -187,7 +186,7 @@ Save the network endpoint and paste it in CORS_ALLOWED_ORIGINS under `directory_
 9) Navigate to the frontend network endpoint in your browser of choice.
 
 ## Evaluation and Subsequent Plans
-So far we have accomplished: 
+What we have accomplished for Milestone 2:
 - Typescript preact frontend and Django backend development from scratch for a functional MVP.
 - Backend sentiment analysis functions.
 - Backend data processing functions for NFT prices, volume, trends against sentiment. 
@@ -195,10 +194,14 @@ So far we have accomplished:
 - API call functions for NFT data and routing from backend to frontend.
 - Graphing functions
 
-To-Do for Milestone 3:
+What we have accomplished for Milestone 3:
 - Finish training our price prediction model and integrate it into our code.
 - Debug and finish our search bar feature.
-- Test different ML models (linear regression, CNN, RNN) and document their respective accuracy rates.
+- Test different ML models (linear regression, CNN, RNN) and pick an optimal one
 - Optimise our fetch requests for NFT data for faster loadtime.
-- User authentication system and possibly a personal wallet 
 - CSS styling
+
+Additional features/touch-up we would like to add before Splashdown:
+- Refining the machine learning to be even more accurate
+- Add a personal wallet
+- Further CSS styling
