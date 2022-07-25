@@ -85,14 +85,17 @@ Choosing of Learning Algorithm:
 According to a 2018 ![report](https://journalofbigdata.springeropen.com/articles/10.1186/s40537-017-0111-6#Sec21) titled "Big Data: Deep Learning for financial sentiment analysis", the Pearson Correlation Coefficient between a stock price and a general user’s sentiment is equal to 0.05, which means that only 53% of the time are users able to predict future stock prices correctly. With the use of deep learning models in sentiment analysis, the percentage can rise to up to 75%.
 ![comparison](https://user-images.githubusercontent.com/25603844/180782877-da9ec8b1-71b1-4adc-b901-959edf045c70.PNG)
 
+
 In the analysis, Convolutional Neural Network (CNN) model had the best performance, followed by LSTM (based of RNN), Logistic Regression then lastly Doc2Vec. 
 As CNN is convolutional in nature and requires a very specifically transformed set of inputs, we opted for the second best performing model LSTM. The difference between LSTM and RNN is that LSTM effectively resolves the vanishing gradient problem of RNN, where recent inputs are weighted higher. Hence accounting for ease of data processing and performance, we opted for LSTM as our machine learning model. 
 
 Data Collecting and Processing:
+
 For the top 500 NFT collections, we collect daily price data over the past 7 days (due to a 7-day limit by the twitter search API), and append it to a priceArray. At every day iterated for each token, we call a function to get the twitter sentiment for that day (value from -1 to 1), and append it to a sentimentArr. 
 We then clean arrays with insufficient data (as some collections do not have data for a field on that day), and transform it into a one-dimensional numpy array, and normalise the price to (-1 to 1).
 
 Model training and prediction:
+
 We have 2 separate files for model training and prediction, under backend/train.py and backend/prediction.py. Everyday we feed new data to train.py, and it trains the model using sentimentArr as X variable, and priceArr (one day ahead) as Y variable, then eventually it stores the trained model as "name.h5", with h5 being a model extension.
 Then, in prediction.py, we load up the model and predict the next day price increase (in percentage), with the sentiment score as input. If an array of sentiment scores are provided, then the next day price increase will be more accurate. 
 
