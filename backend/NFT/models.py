@@ -89,7 +89,7 @@ class Asset(models.Model):
     type = models.CharField(
         max_length=7, choices=Type, default=URL, blank=False)
 
-    data = models.TextField(max_length=100_000)
+    data = models.TextField(max_length=100_000, default="")
     mimeType = models.CharField(max_length=50, default="")
 
     @classmethod
@@ -119,9 +119,9 @@ class DataPoint(models.Model):
 
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
     timestamp = models.DateTimeField()
-    tkn = models.JSONField(default={})
-    prc = models.JSONField(default={})
-    vol = models.JSONField(default={})
+    tkn = models.JSONField()
+    prc = models.JSONField()
+    vol = models.JSONField()
 
     class Meta:
         constraints = [
@@ -133,6 +133,9 @@ class DataPoint(models.Model):
         """Initialise the fields as given.
         """
         point = cls(collection=collection, timestamp=timestamp)
+        point.tkn = {key: "" for key in cls.tkn_values}
+        point.prc = {key: "" for key in cls.prc_values}
+        point.vol = {key: "" for key in cls.vol_values}
         point.save()
         return point
 

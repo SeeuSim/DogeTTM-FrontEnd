@@ -151,9 +151,9 @@ def price_history_with_sentiment(contract_address:str, time_period:str, grouping
         'groupByPeriod': grouping
     }
     response = requests.get(mnemonic_endpoint, headers=HEADER, params=param).json()
-    name = get_NFT_name(address)
+    name = get_NFT_name(contract_address)
     sentimentScore, sentimentCount = getSentiment(name)
-    response[sentScore] = sentimentScore
-    response[sentCount] = sentimentCount
+    response['sentScore'] = sentimentScore
+    response['sentCount'] = sentimentCount
     return response
 

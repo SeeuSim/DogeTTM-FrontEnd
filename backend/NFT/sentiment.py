@@ -1,4 +1,4 @@
-import mnemonic_query
+from . import mnemonic_query
 import requests
 import os
 import datetime
@@ -7,7 +7,7 @@ import requests
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-import sentiment as stm
+# import sentiment as stm
 import tensorflow as tf
 import json
 import collections
@@ -116,8 +116,8 @@ def getPastSentiment(name, time):
   now = now.strftime(dtformat)
 
   pre = time_travel(now, time)
-  params_params['start_time'] = pre
-  params_params['end_time'] = now
+  query_params['start_time'] = pre
+  query_params['end_time'] = now
 
   return getSentiment(name)
 
