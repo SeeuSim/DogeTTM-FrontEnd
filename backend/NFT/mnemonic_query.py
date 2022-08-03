@@ -5,24 +5,29 @@ import requests
 from .sentiment import getSentiment
 
 dotenv.load_dotenv()
+
 MNEMONIC_KEY = os.getenv('MNEMONIC_KEY')
+RARIFY_KEY = os.getenv('RARIFY_API_KEY')
+
 HEADER = {
         "X-API-Key": MNEMONIC_KEY
     }
+
 BASE_ENDPOINT = "https://ethereum.rest.mnemonichq.com"
 
+
 def get_NFT_name(address:str):
-    RARIFY_API_KEY="1959b00b-435b-4c27-a1b7-66168414d0dc"
     address = "ethereum:" + address
     endpoint = f'https://api.rarify.tech/data/contracts/{address}'
     headers = {
-        "Authorization": f'Bearer {RARIFY_API_KEY}'
+        "Authorization": f'Bearer {RARIFY_KEY}'
     }
     params = {
         'include': "metadata"
     }
     response = requests.get(endpoint, headers=headers, params=params)
     return response.json()['data']['attributes']['name']
+
 
 def contract_tokens(contract_address:str):
     mnemonic_endpoint = f'https://ethereum.rest.mnemonichq.com/tokens/v1beta1/by_contract/{contract_address}'
@@ -32,6 +37,7 @@ def contract_tokens(contract_address:str):
     }
 
     return requests.get(mnemonic_endpoint, headers=HEADER, params=param).json()
+
 
 def token_metadata(contract_address:str, token_id:str):
     mnemonic_endpoint = f'https://ethereum.rest.mnemonichq.com/tokens/v1beta1/token/{contract_address}/{token_id}/metadata'
@@ -130,6 +136,7 @@ def tokens_supply_by_contract(contract_address:str, duration:str, grouping:str) 
 def contract_details(contract_address:str) -> dict:
     mnemonic_endpoint = f'{BASE_ENDPOINT}/contracts/v1beta1/by_address/{contract_address}'
     return requests.get(mnemonic_endpoint, headers=HEADER).json()
+
 
 def price_history_with_sentiment(contract_address:str, time_period:str, grouping:str):
     """Gets the price history for the specified contract address.
