@@ -1,9 +1,10 @@
 from decimal import Decimal
+from gc import collect
 
 from django.db import models
 from django.utils import timezone
 
-from .mnemonic_query import (contract_details, contract_tokens,
+from .mnemonic_query import (contract_details, contract_tokens, format_date,
                              owners_count_by_contract, price_history,
                              sales_volume_by_contract,
                              tokens_supply_by_contract)
@@ -14,14 +15,14 @@ from .mnemonic_query import (contract_details, contract_tokens,
 class Collection(models.Model):
     name = models.CharField(max_length=512)
     address = models.CharField(max_length=42, unique=True)
-    owners = models.BigIntegerField(default=int("0"))
-    token_count = models.BigIntegerField(default=int("0"))
+    owners = models.BigIntegerField(default=0)
+    token_count = models.BigIntegerField(default=0)
 
     init_state = {
-        "1d": float('-inf'),
-        "7d": float('-inf'),
-        '30d': float('-inf'),
-        '365d': float('-inf')
+        "1d": '-1',
+        "7d": '-1',
+        '30d': '-1',
+        '365d': '-1'
     }
 
     avg_price = models.JSONField(default=dict)
@@ -44,15 +45,20 @@ class Collection(models.Model):
         """
         collection = cls(address=address_input)
         collection.name = contract_details(address_input)['contract']['name']
-        collection.owners = owners_count_by_contract(
+        owners = owners_count_by_contract(
             address_input, "DURATION_1_DAY", "GROUP_BY_PERIOD_15_MINUTES")['dataPoints'][-1]['count']
+        if len(owners) >= 19:
+            collection.owners = owners[:18]
+        else:
+            collection.owners = owners
         token_data = tokens_supply_by_contract(
             address_input, "DURATION_1_DAY", "GROUP_BY_PERIOD_15_MINUTES")['dataPoints'][-1]
         minted:int = int(token_data['totalMinted'])
         burned:int = int(token_data['totalBurned'])
-        collection.token_count = minted - burned
-        collection.avg_price, collection.max_price, collection.sales_count, \
-            collection.sales_volume = collection.init_state
+        collection.token_count = min(9223372036854775807, abs(minted - burned))
+        for item in [collection.avg_price, collection.max_price,
+                collection.sales_count, collection.sales_volume]:
+            item = collection.init_state
         collection.save()
         Asset.create(collection)
         populate_datapoints(collection)
@@ -77,6 +83,7 @@ class Collection(models.Model):
             "DURATION_365_DAYS":"365d"
         }
         data_map[field][timeperiod_map[timeperiod]] = data
+        self.save()
 
     def __update_timeseries(self, data, field):
         """Updates the datapoints for their respective fields.
@@ -87,11 +94,12 @@ class Collection(models.Model):
         - field: "price", "tokens", "volume"
         """
         for point in data:
-            epoch = point['timestamp'].replace('T', ' ').replace('Z', '')
+            epoch = format_date(point['timestamp'])
             if DataPoint.objects.filter(collection=self,timestamp=epoch).exists():
                 dP = DataPoint.objects.filter(collection=self,timestamp=epoch)[0]
             else:
-                dP = DataPoint.create(collection=self, timestamp=epoch)
+                DataPoint.create(collection=self, timestamp=epoch)
+                dP = DataPoint.objects.filter(collection=self, timestamp=epoch)[0]
             dP.update(point, field)
 
     def refresh_timeseries(self):
@@ -102,7 +110,7 @@ class Collection(models.Model):
             self.__update_timeseries(point, "price")
             self.__update_timeseries(volume[index], "volume")
             self.__update_timeseries(tokens[index], "tokens")
-        self.last_updated = prices[-1]['timestamp'].replace('T', ' ').replace('Z', '')
+        self.last_updated = format_date(prices[-1]['timestamp'])
 
 
 def populate_datapoints(collection:Collection):
@@ -112,7 +120,7 @@ def populate_datapoints(collection:Collection):
     tokens = tokens_supply_by_contract(address, "DURATION_7_DAYS", "GROUP_BY_PERIOD_1_DAY")['dataPoints']
     collection = Collection.objects.filter(address=address)[0]
     for index, point in enumerate(prices):
-        epoch = point['timestamp'].replace('T', ' ').replace('Z', '')
+        epoch = format_date(point['timestamp'])
         dP = DataPoint.create(collection=collection, timestamp=epoch)
 
         vol = volume[index]
@@ -139,8 +147,7 @@ class Asset(models.Model):
         (URL, 'URL')
     )
     parent_collection:Collection = models.OneToOneField(Collection, on_delete=models.CASCADE)
-    token_id = models.DecimalField(max_digits=10, decimal_places=0,
-                                    default=Decimal('0.00'))
+    token_id = models.BigIntegerField(default=0)
     type = models.CharField(
         max_length=7, choices=Type, default=URL, blank=False)
 
@@ -153,9 +160,15 @@ class Asset(models.Model):
         address = asset.parent_collection.address
         tokens = contract_tokens(address)['tokens']
         for tkn in tokens:
-            if "image" in tkn['metadata']:
+            if tkn['metadata'] and "image" in tkn['metadata'] \
+                    and tkn['metadata']['image'] \
+                    and 'uri' in tkn['metadata']['image']:
                 asset.data = tkn['metadata']['image']['uri']
                 asset.mimeType = tkn['metadata']['image']['mimeType']
+                if len(tkn['tokenId']) < 19:
+                    asset.token_id = tkn['tokenId']
+                else:
+                    asset.token_id = 1
                 break
         asset.save()
         return asset
@@ -187,7 +200,7 @@ class DataPoint(models.Model):
     def create(cls, collection, timestamp):
         """Initialise the fields as given.
         """
-        point = cls(collection=collection, timestamp=timestamp)
+        point = cls(collection=collection, timestamp=timestamp.replace(tzinfo=timezone.utc))
         point.tkn = {key: "" for key in cls.tkn_values}
         point.prc = {key: "" for key in cls.prc_values}
         point.vol = {key: "" for key in cls.vol_values}

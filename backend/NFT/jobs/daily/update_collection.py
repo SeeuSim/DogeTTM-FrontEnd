@@ -1,17 +1,17 @@
-from django_extensions.management.jobs import BaseJob
+from django_extensions.management.jobs import DailyJob
 from django.utils import timezone
 from datetime import timedelta
-from ... import models
-from ....dashboard import mnemonic_query
 
-class Job(BaseJob):
+from ... import models, mnemonic_query
+
+class Job(DailyJob):
     help = "Refreshes all timeseries and rank data within the database"
 
     def execute(self):
-        current_time = timezone.now()
-        for collection in models.Collection.objects.all():
-            if current_time - collection.last_updated > timedelta(days=7):
-                collection.refresh_timeseries()
+        # update timeseries
+        threshold_time = timezone.now() - timedelta(days=7)
+        for collection in models.Collection.objects.filter(last_updated__lte=threshold_time):
+            collection.refresh_timeseries()
 
         metric_to_query = {
             'avgPrice': "by_avg_price",
@@ -21,13 +21,18 @@ class Job(BaseJob):
         }
 
         metric_headers = ['avgPrice', 'maxPrice', 'salesCount', 'salesVolume']
+
+        # Clear ranking data
         for collection in models.Collection.objects.all():
             for i in metric_headers:
-                collection.update_rank(float('-int'), metric_to_query[i][3:], "DURATION_7_DAYS")
+                collection.update_rank('', metric_to_query[i][3:], "DURATION_7_DAYS")
 
+        # Update ranking data
         for i in metric_headers:
+            print(i, "\n--------")
             collections_list = mnemonic_query.get_top_collections(metric_to_query[i], "DURATION_7_DAYS")['collections']
-            for collection in collections_list:
+            for index, collection in enumerate(collections_list):
+                print(index+1, collection['contractName'])
                 c_address = collection['contractAddress']
                 filt = models.Collection.objects.filter(address=c_address)
                 if filt.exists():
@@ -35,6 +40,5 @@ class Job(BaseJob):
                 else:
                     col = models.Collection.create(address_input=c_address)
                 col.update_rank(collection[i], metric_to_query[i][3:], "DURATION_7_DAYS")
-
 
 

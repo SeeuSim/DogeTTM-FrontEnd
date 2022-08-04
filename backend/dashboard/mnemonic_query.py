@@ -46,7 +46,7 @@ def get_top_collections(metric:str, time_period:str) -> dict:
         "duration": f"{time_period}",
         "limit": "500"
     }
-    print('requesting')
+    
     return requests.get(mnemonic_endpoint, headers=HEADER, params=param).json()
 
 def get_top_collections_client(data:JsonResponse, metric:str) -> list:

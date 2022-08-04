@@ -1,5 +1,6 @@
 import os
 
+import datetime
 import dotenv
 import requests
 from .sentiment import getSentiment
@@ -27,6 +28,32 @@ def get_NFT_name(address:str):
     }
     response = requests.get(endpoint, headers=headers, params=params)
     return response.json()['data']['attributes']['name']
+
+
+def get_top_collections(metric:str, time_period:str) -> dict:
+    """Gets the top ranked collections from the Mnemonic API, by the following metrics and time periods:
+
+    Ranking:
+    - by_avg_price
+    - by_max_price
+    - by_sales_count
+    - by_sales_volume
+
+    Time Period:
+    - DURATION_UNSPECIFIED: Unspecified value.
+    - DURATION_1_DAY: 1 day.
+    - DURATION_7_DAYS: 7 days.
+    - DURATION_30_DAYS: 30 days.
+    - DURATION_365_DAYS: 365 days.
+    """
+    mnemonic_endpoint:str = f"https://ethereum.rest.mnemonichq.com/collections/v1beta1/top/{metric}"
+
+    param = {
+        "duration": f"{time_period}",
+        "limit": "20"
+    }
+
+    return requests.get(mnemonic_endpoint, headers=HEADER, params=param).json()
 
 
 def contract_tokens(contract_address:str):
@@ -163,4 +190,15 @@ def price_history_with_sentiment(contract_address:str, time_period:str, grouping
     response['sentScore'] = sentimentScore
     response['sentCount'] = sentimentCount
     return response
+
+
+def format_date(naive_datetime:str) -> datetime.datetime:
+    """Formats the datetime given by the Mnemonic API from
+        "<yyyy>-<mm>-<dd>T<hh>:<mm>Z" to datetime.datetime format.
+    i.e., "2022-06-30T00:00Z" -> datetime.datetime(2022, 6, 30, 0, 0)
+    """
+    naive_date = naive_datetime.replace('-', ":").replace('T', ":")[:-1].split(":")
+    naive_date = list(map(lambda x: int(x), naive_date))
+    return datetime.datetime(year=naive_date[0], month=naive_date[1],
+        day=naive_date[2], hour=naive_date[3], minute=naive_date[4], tzinfo=datetime.timezone.utc)
 
