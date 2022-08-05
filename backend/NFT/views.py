@@ -18,3 +18,6 @@ def contract(request, contract_address:str):
 
 def collection_price_history_with_sentiment(request, contract_address:str, time_period:str, grouping:str):
     return JsonResponse(mnemonic_query.price_history_with_sentiment(contract_address, time_period, grouping))
+
+
+

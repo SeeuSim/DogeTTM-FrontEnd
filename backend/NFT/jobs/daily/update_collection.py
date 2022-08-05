@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django_extensions.management.jobs import DailyJob
 from django.utils import timezone
 from datetime import timedelta
@@ -39,6 +40,6 @@ class Job(DailyJob):
                     col = filt[0]
                 else:
                     col = models.Collection.create(address_input=c_address)
-                col.update_rank(collection[i], metric_to_query[i][3:], "DURATION_7_DAYS")
+                col.update_rank(float(collection[i]), metric_to_query[i][3:], "DURATION_7_DAYS")
 
 

@@ -34,9 +34,6 @@ def getSentiment(name, params=None):
   Takes in String name of token,
   Returns a tuple of float(3dp) sentiment score, and a dictionary count of pos, neu, and neg sentiments.
   """
-  API_key = "dSnZQuCPMVQfCXGhhgWJ6qs8s"
-  API_Secret = "uwgDp27NZ2sEsHfV7oGY95Dy0di38mhQDs9FjzJSfM6n2ejfSr"
-  Bearer_Token = "AAAAAAAAAAAAAAAAAAAAAAgQcgEAAAAAtvIEDNCuREcrZhCu3j9F%2FmhXz00%3DQdawgUlRgpvd2eMyeAug3tPY89yuWvjqVV7NWXlvQX00CJIauI"
   search_url = "https://api.twitter.com/2/tweets/search/recent"
 
   # Optional params: start_time,end_time,since_id,until_id,max_results,next_token,
