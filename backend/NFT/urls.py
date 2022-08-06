@@ -11,4 +11,6 @@ urlpatterns = [
         views.collection_price_history_with_sentiment), name="Contract Price History with Sentiment"),
     path('token/metadata/<contract_address>/<token_id>', cache_page(60*60)(
         views.token_metadata), name="Token Metadata"),
+
+    path('dashboard_ranking/<metric>/<time_period>', views.dashboard_ranking, name="Dashboard Ranking"),
 ]
