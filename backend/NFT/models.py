@@ -52,8 +52,8 @@ class Collection(models.Model):
         minted:int = int(token_data['totalMinted'])
         burned:int = int(token_data['totalBurned'])
 
-        collection.__absolute_bigint(collection.owners, int(owners))
-        collection.__absolute_bigint(collection.token_count, minted - burned)
+        collection.owners = collection.__absolute_bigint(int(owners))
+        collection.token_count = collection.__absolute_bigint(minted - burned)
 
         for item in [collection.avg_price, collection.max_price,
                 collection.sales_count, collection.sales_volume]:
@@ -64,11 +64,11 @@ class Collection(models.Model):
         return collection
 
 
-    def __absolute_bigint(self, field, value):
+    def __absolute_bigint(self, value):
         if value < 0:
-            field = max(value, -9223372036854775807)
+            return max(value, -9223372036854775807)
         else:
-            field = min(value, 9223372036854775807)
+            return min(value, 9223372036854775807)
 
 
     def refresh_timeseries(self):
@@ -194,9 +194,7 @@ class Asset(models.Model):
             self.save()
             data = data.split(',')[-1]
             mime = mimeType.split(';')[0]
-            with urlopen(f'data:{mime};base64, {data}') as response:
-                out = response.read().decode().split(",")[-1]
-                return out
+            return f'data:{mime};base64,{data}'
         else:
             self.type = self.URL
             self.save()
