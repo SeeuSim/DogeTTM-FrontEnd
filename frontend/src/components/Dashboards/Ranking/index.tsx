@@ -6,7 +6,7 @@ import NftImage from '../../Image';
 import style from "./style.css";
 import * as URLCONFIG from "../../../../URLCONF.json";
 
-const baseURL = URLCONFIG.endpoint;
+const baseURL = "";
 
 interface TrendingData {
     "id":string,
