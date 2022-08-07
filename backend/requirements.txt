@@ -2,6 +2,7 @@ wheel
 beautifulsoup4
 Django
 django-clearcache
+django-cors-headers
 django-environ
 django-extensions
 python-dotenv
@@ -12,6 +13,6 @@ numpy
 nltk
 matplotlib
 keras
-tensorflow
+tensorflow-macos
 sklearn
 pandas
