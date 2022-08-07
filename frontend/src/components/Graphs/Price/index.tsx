@@ -4,7 +4,7 @@ import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
 import * as URLCONFIG from "../../../../URLCONF.json";
 
-const baseURL = URLCONFIG.endpoint;
+const baseURL = URLCONFIG.BACKEND;
 
 interface PriceGraph{
     address:string,

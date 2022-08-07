@@ -3,8 +3,9 @@ import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { Link } from 'preact-router/match';
 import style from "./style.css";
+import * as URLCONF from "../../../../URLCONF.json"
 
-const baseURL = "";
+const baseURL = URLCONF.BACKEND;
 
 interface TrendingData {
     "id":string,

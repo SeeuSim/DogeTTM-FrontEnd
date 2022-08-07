@@ -5,7 +5,7 @@ import * as URLCONFIG from "../../../URLCONF.json";
 import PriceGraph from '../../components/Graphs/Price';
 import style from './style.css';
 
-const baseURL = URLCONFIG.endpoint;
+const baseURL = URLCONFIG.BACKEND;
 
 interface NFTContract {
     contract_address:string
