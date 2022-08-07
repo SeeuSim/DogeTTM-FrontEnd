@@ -7,187 +7,102 @@ import * as URLCONF from "../../../../URLCONF.json"
 
 const baseURL = URLCONF.BACKEND;
 
-interface TrendingData {
-    "id":string,
-    "address":string,
-    "name":string,
-    "tokens":string,
-    "unique_owners":string,
-    "volume_change":string,
-    "percent_change":string,
+type Rank = {
+  artwork:string,
+  artwork_type:string,
+  collection_name:string,
+  data:string
 }
 
-interface TopRankData {
-    "id":string,
-    "address":string,
-    "name":string,
-    "tokens":string,
-    "min_price":string,
-    "max_price":string,
-    "volume":string,
-    "avg_price":string,
-}
-
-interface RankResponse {
-    "data":TopRankData[]
-}
-
-interface TrendResponse {
-    "data": TrendingData[]
+type RankResponse = {
+  data: Rank[]
 }
 
 const Ranking: FunctionalComponent = () => {
-    const [rankValue, setRankValue] = useState("min_price");
-    const [rankData, setRankData] = useState<RankResponse>();
-    const [trendData, setTrendData] = useState<TrendResponse>();
-    const [loaded, setLoaded] = useState(false)
-    const [trendTimeValue, setTimeValue] = useState('7d');
+  const [metric, setMetric] = useState('avg_price');
+  const [timePeriod, setTime] = useState('7d');
+  const [tableData, setTableData] = useState<Rank[]>();
 
-    const changeRank = (e:any) => {
-        setRankValue(e.target.value);
-        console.log(rankValue)
-    };
+  const changeTime = (e:any) => {
+    setTime(e.target.value)
+  };
 
-    const changeTime = (e:any) => {
-        setTimeValue(e.target.value);
+  const metricHeaders = [
+    "avg_price", "max_price", "sales_count", "sales_volume"
+  ];
+
+  const fetchData = useCallback(() => {
+    axios.get<RankResponse>(`${baseURL}/nft/dashboard_ranking/${metric}/${timePeriod}`)
+      .then((response) => {
+        setTableData(response.data.data);
+      })
+    }, [metric, timePeriod]
+  );
+
+  useEffect(
+    () => {
+      fetchData();
+    },[metric, timePeriod]
+  );
+
+  const display = (tableData:Rank[]|undefined) => {
+    if (tableData) {
+      const priceFormatter = (data:string) => {
+        return metric != 'sales_count'
+          ? parseFloat(data).toFixed(3)
+          : parseInt(data);
+      };
+      const headersFormatter = (header:string) => {
+        header = header.split("_")
+                      .map((part:string) => part.charAt(0).toUpperCase() + part.substring(1))
+                      .join(" ")
+        return metric != "sales_count"
+          ? `${header} (ETH)`
+          : header;
+      };
+      const headers = ['Artwork', 'Collection Name', headersFormatter(metric)].map(
+        (header:string) => <th class={style.rankHeader}>{header}</th>
+      );
+      return (
+        <table class={style.RankTable}>
+          <thead>
+            <tr>{headers}</tr>
+          </thead>
+          <tbody>
+          {tableData.map<h.JSX.Element>(
+            (elem:Rank) =>
+              <tr>
+                <td>
+                  <img class={style.TableImage} src={elem.artwork}></img>
+                </td>
+                <td>{elem.collection_name}</td>
+                <td>{priceFormatter(elem.data)}</td>
+              </tr>
+            )
+          }
+          </tbody>
+        </table>
+      );
+    } else {
+      return <div>Loading</div>;
     }
+  }
 
-    const fetchRankData = useCallback(() => {
-        axios.get<RankResponse>(`${baseURL}/toprank/${rankValue}`)
-        .then((response) => {
-            console.log(response);
-            setRankData(response.data);
-            setLoaded(true);
-        })
-    }, []);
-
-    const fetchTrendData = useCallback(() => {
-        axios.get<TrendResponse>(`${baseURL}/toptrend/${trendTimeValue}`)
-        .then((response) => {
-            console.log(response);
-            setTrendData(response.data);
-            setLoaded(true);
-        })
-    }, [])
-
-    const fetchData = () => {
-        if (rankValue == "trending") {
-            fetchTrendData();
-        }
-        fetchRankData()
-    }
-    useEffect(() => {
-        fetchData
-    }, [rankValue])
-
-    const renderTable = (loaded:boolean, value:string) => {
-        if (loaded && value == "trending") {
-            return renderTrending();
-        } else if (loaded) {
-            return renderTop();
-        }
-        return <div><h2>Waiting for Data Type Selection.</h2></div>
-    }
-
-    const renderTrending = () => {
-        const headers = ["Collection", "Collection Name", "Total Volume", "Percent Change"];
-        const values:TrendResponse|undefined = trendData;
-        var rows = [1].map((i) => <tr>{headers.map((header) => <td>Data Loading</td>)}</tr>)
-
-        if (typeof values != 'undefined') {
-            const raw = values['data'];
-            rows = raw.map<h.JSX.Element>((row) => (
-                <tr>
-                    <td>
-                        {/* <NftImage address={row['address']} tokens={row['tokens']} /> */}
-                    </td>
-                    <td>
-                        <Link href={`/collections/${row['id']}`}>
-                            {row['name']}
-                        </Link>
-                    </td>
-                    <td>{row['volume_change']}</td>
-                    <td>{row['percent_change']}</td>
-                </tr>
-            ))
-        }
-
-        return (
-            <table>
-                <thead>
-                    <tr>{headers.map((header) => <th class="header">{header}</th>)}</tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-        );
-    }
-
-    const renderTop = () => {
-        const values:{[k:string]:string} = {"min_price": "Minimum Sale Value",
-                                            "max_price": "Maximum Sale Value",
-                                            "volume":    "Total Volume"       };
-        const headers = ["Collection", "Collection Name", values[rankValue]];
-        const raw:RankResponse|undefined = rankData;
-        var rows = [1].map((i) => <tr>{headers.map((header) => <td>Data Loading</td>)}</tr>)
-
-
-        if (typeof raw != "undefined") {
-            const rawRows = raw['data']
-            rows = rawRows.map<h.JSX.Element>((row) => (
-                <tr>
-                    <td>
-                        {/* <NftImage address={row['address']} tokens={row['tokens']} /> */}
-                    </td>
-                    <td>
-                        <Link href={`/collections/${row['id']}`}>
-                            {row['name']}
-                        </Link>
-                    </td>
-                    <td>{row[rankValue=="min_price"
-                                ? "min_price"
-                                : rankValue == "max_price"
-                                ? "max_price"
-                                : "volume"]}</td>
-                </tr>
-            ))
-        }
-        return (
-            <table>
-                <thead>
-                    <tr>{headers.map((header) => <th class="header">{header}</th>)}</tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
-            </table>
-        );
-    }
-
-    return(
-        <div>
-            <div>
-                <select value={rankValue} onChange={changeRank}>
-                    <option value="min_price">Min Price</option>
-                    <option value="max_price">Max Price</option>
-                    <option value="volume">Volume</option>
-                    <option value="trending">Trending</option>
-                </select>
-                {rankValue=="trending"
-                    ?   <select value={trendTimeValue} onChange={changeTime}>
-                            <option value="24h">24h</option>
-                            <option value="3d">3d</option>
-                            <option value="7d">7d</option>
-                            <option value="30d">30d</option>
-                            <option value="90d">90d</option>
-                        </select>
-                    : null}
-                <button onClick={fetchData}><h3>See My Data!</h3></button>
-            </div>
-            {renderTable(loaded, rankValue)}
-        </div>
-    );
+  return(
+    <div>
+      <select value={metric} onChange={(e:any) => setMetric(e.target.value)}>
+        <option value="avg_price">Average Price</option>
+        <option value="max_price">Maximum Price</option>
+        <option value="sales_count">Sales Count</option>
+        <option value="sales_volume">Sales Volume</option>
+      </select>
+      <select value={timePeriod} onChange={(e:any) => setTime(e.target.value)}>
+        <option value="1d">1 Day</option>
+        <option value="7d">7 Days</option>
+      </select>
+      {display(tableData)}
+    </div>
+  );
 }
 
 export default Ranking;
