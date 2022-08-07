@@ -2,7 +2,6 @@ import axios from 'axios';
 import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
 import * as URLCONFIG from "../../../URLCONF.json";
-import NftImage from "../../components/Image";
 import PriceGraph from '../../components/Graphs/Price';
 import style from './style.css';
 
@@ -53,7 +52,7 @@ const Collection:FunctionalComponent<NFTContract> = (props: NFTContract) => {
                         <h1>
                             Collection: <strong>{data['name']}</strong>
                         </h1>
-                        <NftImage address={data['address']} tokens={data['tokens']} />
+                        {/* <NftImage address={data['address']} tokens={data['tokens']} /> */}
                         <p><strong>Description:</strong></p>
                         <p>{data['description']}</p><br />
                         <p><strong>Tokens:</strong></p>

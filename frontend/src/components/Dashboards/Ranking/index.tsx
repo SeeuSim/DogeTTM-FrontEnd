@@ -2,9 +2,7 @@ import axios from 'axios';
 import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
 import { Link } from 'preact-router/match';
-import NftImage from '../../Image';
 import style from "./style.css";
-import * as URLCONFIG from "../../../../URLCONF.json";
 
 const baseURL = "";
 
@@ -100,7 +98,7 @@ const Ranking: FunctionalComponent = () => {
             rows = raw.map<h.JSX.Element>((row) => (
                 <tr>
                     <td>
-                        <NftImage address={row['address']} tokens={row['tokens']} />
+                        {/* <NftImage address={row['address']} tokens={row['tokens']} /> */}
                     </td>
                     <td>
                         <Link href={`/collections/${row['id']}`}>
@@ -139,7 +137,7 @@ const Ranking: FunctionalComponent = () => {
             rows = rawRows.map<h.JSX.Element>((row) => (
                 <tr>
                     <td>
-                        <NftImage address={row['address']} tokens={row['tokens']} />
+                        {/* <NftImage address={row['address']} tokens={row['tokens']} /> */}
                     </td>
                     <td>
                         <Link href={`/collections/${row['id']}`}>
