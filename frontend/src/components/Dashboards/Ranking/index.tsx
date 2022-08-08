@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
-import { Link } from 'preact-router/match';
+import * as URLCONF from "../../../../URLCONF.json";
 import style from "./style.css";
-import * as URLCONF from "../../../../URLCONF.json"
 
 const baseURL = URLCONF.BACKEND;
 
@@ -11,25 +10,18 @@ type Rank = {
   artwork:string,
   artwork_type:string,
   collection_name:string,
-  data:string
-}
+  data:string,
+  address:string
+};
 
 type RankResponse = {
   data: Rank[]
-}
+};
 
 const Ranking: FunctionalComponent = () => {
   const [metric, setMetric] = useState('avg_price');
   const [timePeriod, setTime] = useState('7d');
   const [tableData, setTableData] = useState<Rank[]>();
-
-  const changeTime = (e:any) => {
-    setTime(e.target.value)
-  };
-
-  const metricHeaders = [
-    "avg_price", "max_price", "sales_count", "sales_volume"
-  ];
 
   const fetchData = useCallback(() => {
     axios.get<RankResponse>(`${baseURL}/nft/dashboard_ranking/${metric}/${timePeriod}`)
@@ -63,6 +55,7 @@ const Ranking: FunctionalComponent = () => {
       const headers = ['Artwork', 'Collection Name', headersFormatter(metric)].map(
         (header:string) => <th class={style.rankHeader}>{header}</th>
       );
+
       return (
         <table class={style.RankTable}>
           <thead>
@@ -75,6 +68,7 @@ const Ranking: FunctionalComponent = () => {
                 <td>
                   <img class={style.TableImage} src={elem.artwork}></img>
                 </td>
+                {/* <td>{elem.address}</td> */}
                 <td>{elem.collection_name}</td>
                 <td>{priceFormatter(elem.data)}</td>
               </tr>

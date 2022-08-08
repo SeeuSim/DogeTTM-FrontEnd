@@ -1,3 +1,4 @@
+from datetime import timedelta
 from urllib.request import urlopen
 
 from django.db import models
@@ -194,6 +195,10 @@ class Asset(models.Model):
             self.save()
             data = data.split(',')[-1]
             mime = mimeType.split(';')[0]
+            if self.parent_collection.address == "0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb":
+                # Special Case for CRYPTOPUNKS: Double encoded with base64 and \
+                # then encoded svg with improper coded escape characters
+                return urlopen(f'data:{mime};base64,{data}').read().decode().replace("#", "%23")
             return f'data:{mime};base64,{data}'
         else:
             self.type = self.URL

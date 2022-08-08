@@ -24,10 +24,11 @@
   "dependencies": {
     "canvasjs": "^1.8.3",
     "canvasjs-react-charts": "^1.0.5",
+    "chart.js": "^3.9.1",
     "preact": "^10.3.1",
     "preact-render-to-string": "^5.1.4",
     "preact-router": "^3.2.1",
-    "proxy": "http://localhost:8000"
+    "react-chartjs-2": "^4.3.1"
   },
   "devDependencies": {
     "@types/canvasjs": "^1.9.7",

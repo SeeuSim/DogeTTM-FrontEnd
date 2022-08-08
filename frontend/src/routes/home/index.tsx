@@ -3,7 +3,6 @@ import Ranking from '../../components/Dashboards/Ranking';
 import Searchbar from '../../components/Searchbar';
 import Sentiment from '../../components/Dashboards/Sentiment';
 import style from './style.css';
-import RankingNew from '../../components/Dashboards/Ranking';
 
 const Home: FunctionalComponent = () => {
     return (

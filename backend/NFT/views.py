@@ -95,7 +95,8 @@ def dashboard_ranking(request, metric:str, time_period:str):
             "artwork": asset_list[collection.address].data,
             "artwork_type": asset_list[collection.address].type,
             "collection_name": collection.name,
-            "data": data_mappings[metric](collection)
+            "data": data_mappings[metric](collection),
+            "address": collection.address
         }, collections
     ))
 
