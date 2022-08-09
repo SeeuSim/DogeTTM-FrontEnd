@@ -1,9 +1,9 @@
-from decimal import Decimal
 from django_extensions.management.jobs import DailyJob
 from django.utils import timezone
 from datetime import timedelta
 
 from ... import models, mnemonic_query
+
 
 class Job(DailyJob):
     help = "Refreshes all timeseries and rank data within the database"

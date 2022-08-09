@@ -16,7 +16,8 @@ class Collection(models.Model):
     name = models.CharField(max_length=512)
     address = models.CharField(max_length=42, unique=True)
     owners = models.BigIntegerField(default=0)
-    token_count = models.BigIntegerField(default=0)
+    total_minted = models.BigIntegerField(default=0)
+    total_burned = models.BigIntegerField(default=0)
 
     init_state = {
         "1d": '-1',
@@ -54,7 +55,8 @@ class Collection(models.Model):
         burned:int = int(token_data['totalBurned'])
 
         collection.owners = collection.__absolute_bigint(int(owners))
-        collection.token_count = collection.__absolute_bigint(minted - burned)
+        collection.total_burned = collection.__absolute_bigint(burned)
+        collection.total_minted = collection.__absolute_bigint(minted)
 
         for item in [collection.avg_price, collection.max_price,
                 collection.sales_count, collection.sales_volume]:

@@ -7,75 +7,58 @@ import style from './style.css';
 
 const baseURL = URLCONFIG.BACKEND;
 
-interface NFTContract {
-    contract_address:string
+type CollectionProps = {
+  address:string
+};
+
+type CollectionData = {
+  name:string,
+  address:string,
+  owners:string,
+  total_minted:string,
+  total_burned:string,
+  artwork:string,
+  dataPoints:DataPoint[]
 }
 
-interface RarityContract {
-    "address":string,
-    "name":string,
-    "unique_owners":string,
-    "tokens":string,
-    "description":string,
-    "id":string
+type DataPoint = {
+  timestamp:string,
+  prc:DataPoint_prc,
+  tkn:DataPoint_tkn,
+  vol:DataPoint_vol
 }
 
-const Collection:FunctionalComponent<NFTContract> = (props: NFTContract) => {
-    const {contract_address} = props;
-    const [data, setData] = useState<RarityContract>();
-    const [loaded, setLoaded] = useState<Boolean>(false);
-    const [time, setTime] = useState("30d");
+type DataPoint_prc = {
+  min:string,
+  max:string,
+  avg:string
+}
 
-    const fetchData = useCallback(() => {
-        axios.get<RarityContract>(`${baseURL}/contracts/${contract_address}`)
-        .then((response) => {
-            console.log(response)
-            setData(response.data)
-            setLoaded(true)
-        })
-    }, [])
+type DataPoint_tkn = {
+  minted:string,
+  burned:string,
+  totalMinted:string,
+  totalBurned:string
+}
 
-    const changeTime = (e:any) => {
-        setTime(e.target.value);
-        renderData();
-    };
+type DataPoint_vol = {
+  count:string,
+  vol:string
+}
 
-    useEffect(() => {
-        fetchData()
-    }, [])
+const Collection:FunctionalComponent<CollectionProps> = (props:CollectionProps) => {
+  const {address} = props;
+  const [data, setData] = useState<CollectionData>();
 
-    const renderData = () => {
-        if (loaded && typeof data != "undefined") {
-            return (
-                <div class={style.collection}>
-                    <div>
-                        <h1>
-                            Collection: <strong>{data['name']}</strong>
-                        </h1>
-                        {/* <NftImage address={data['address']} tokens={data['tokens']} /> */}
-                        <p><strong>Description:</strong></p>
-                        <p>{data['description']}</p><br />
-                        <p><strong>Tokens:</strong></p>
-                        <p>{data['tokens']}</p><br />
-                        <p><strong>Unique Owners:</strong></p>
-                        <p>{data['unique_owners']}</p>
-                    </div>
-                    <div>
-                        <select value={time} onChange={changeTime}>
-                            <option value="24h">24h</option>
-                            <option value="7d">7d</option>
-                            <option value="30d">30d</option>
-                            <option value="all_time">All Time</option>
-                        </select>
-                        <PriceGraph address={data['id']} time={time} />
-                    </div>
-                </div>
-            );
-        }
-        return <h2>Loading</h2>
-    };
+  const fetchData = useCallback(() => {
+    axios.get<CollectionData>(`${baseURL}/nft/collection/${address}`)
+      .then((res) => setData(res.data))
+  }, []);
 
-    return renderData();
+  useEffect(() => {
+    fetchData();
+  }, [])
+  return <div></div>
 }
 
 export default Collection;

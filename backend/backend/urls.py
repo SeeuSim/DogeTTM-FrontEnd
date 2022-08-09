@@ -20,5 +20,5 @@ urlpatterns = [
     path('admin/clearcache/', include('clearcache.urls')),
     path('admin/', admin.site.urls),
     path('dashboard/', include('dashboard.urls')),
-    path('nft/', include('NFT.urls'))
+    path('nft/', include('NFT.urls')),
 ]

@@ -1,4 +1,5 @@
-from multiprocessing.managers import BaseManager
+from argparse import ArgumentError
+from os import stat
 from django.http import JsonResponse
 from . import models
 from . import mnemonic_query
@@ -9,15 +10,20 @@ def tokens_by_contract(request, contract_address:str):
     return response
 
 def token_metadata(request, contract_address:str, token_id:str):
-    return JsonResponse(mnemonic_query.token_metadata(contract_address, token_id))
+    return JsonResponse(mnemonic_query.token_metadata(contract_address,
+                                                    token_id))
 
-def collection_price_history(request, contract_address:str, time_period:str, grouping:str):
-    return JsonResponse(mnemonic_query.price_history(contract_address, time_period, grouping))
+def collection_price_history(request, contract_address:str, time_period:str,
+                            grouping:str):
+    return JsonResponse(mnemonic_query.price_history(contract_address,
+                                                    time_period,
+                                                    grouping))
 
 def contract(request, contract_address:str):
     return JsonResponse(mnemonic_query.contract_tokens(contract_address))
 
-def collection_price_history_with_sentiment(request, contract_address:str, time_period:str, grouping:str):
+def collection_price_history_with_sentiment(request, contract_address:str,
+                                            time_period:str, grouping:str):
     return JsonResponse(mnemonic_query
         .price_history_with_sentiment(contract_address,
                                     time_period,
@@ -84,11 +90,11 @@ def dashboard_ranking(request, metric:str, time_period:str):
     }
 
     collections = filter_mappings[metric][time_period].order_by(
-        order_mappings[metric][time_period]
-        )
+        order_mappings[metric][time_period])
 
-    asset_list = {collection.address: models.Asset.objects.filter(
-        parent_collection=collection)[0] for collection in collections}
+    asset_list = {collection.address: models.Asset.objects.get(
+        parent_collection=models.Collection.objects.get(
+            address=collection.address)) for collection in collections}
 
     out_list = list(map(
         lambda collection: {
@@ -102,4 +108,49 @@ def dashboard_ranking(request, metric:str, time_period:str):
 
     return JsonResponse({"data": out_list})
 
+class CollectionView:
+    @staticmethod
+    def collection_page(request, contract_address:str):
+        return JsonResponse(CollectionView.or_else_create(contract_address))
 
+    @staticmethod
+    def collection_as_dict(collection:models.Collection):
+        return {
+            "name": collection.name,
+            "address": collection.address,
+            "owners": collection.owners,
+            "total_minted": collection.total_minted,
+            "total_burned": collection.total_burned,
+            "artwork": models.Asset.objects.get(parent_collection=collection).data
+        }
+
+    @staticmethod
+    def collection_fromdb(contract_address:str):
+        collection = models.Collection.objects.get(address=contract_address)
+        out = CollectionView.collection_as_dict(collection)
+        points = models.DataPoint.objects.filter(collection=collection).order_by('timestamp')
+        out['dataPoints'] = list(map(lambda dP: DataPointView.datapoint_as_dict(dP), points))
+        return out
+
+    @staticmethod
+    def or_else_create(contract_address:str):
+        if models.Collection.objects.filter(address=contract_address).exists():
+            return CollectionView.collection_fromdb(contract_address)
+
+        try:
+            collection = models.Collection.create(contract_address)
+        except KeyError:
+            assert collection, f'Address `{contract_address}` is invalid. \
+                Please provide a valid address.'
+        return CollectionView.collection_fromdb(collection.address)
+
+
+class DataPointView:
+    @staticmethod
+    def datapoint_as_dict(datapoint:models.DataPoint):
+        return {
+            "timestamp": datapoint.timestamp,
+            "prc": datapoint.prc,
+            "tkn": datapoint.tkn,
+            "vol": datapoint.vol
+        }

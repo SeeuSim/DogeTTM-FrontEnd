@@ -12,5 +12,6 @@ urlpatterns = [
     path('token/metadata/<contract_address>/<token_id>', cache_page(60*60)(
         views.token_metadata), name="Token Metadata"),
 
-    path('dashboard_ranking/<metric>/<time_period>', views.dashboard_ranking, name="Dashboard Ranking"),
+    path('dashboard_ranking/<metric>/<time_period>', cache_page(60)(views.dashboard_ranking), name="Dashboard Ranking"),
+    path('collection/<contract_address>', (views.CollectionView.collection_page), name="Collection Details"),
 ]

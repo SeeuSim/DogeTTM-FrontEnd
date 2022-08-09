@@ -7,8 +7,8 @@ from .models import *
 
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
-    list_display = ("name", "address", "owners", "token_count")
-    readonly_fields = ("address", "name", "owners", "token_count")
+    list_display = ("name", "address", "owners", "total_minted", "total_burned")
+    readonly_fields = ("address", "name", "owners", "total_minted", "total_burned")
 
 
 @admin.register(DataPoint)

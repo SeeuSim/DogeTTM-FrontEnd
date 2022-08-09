@@ -2,6 +2,8 @@
 
 1. First, in `./backend/` create a file named `.env`. Paste in the following:
 ```
+SECRET_KEY='django-insecure-lx0xaa#(h453fh4i*)+ugqml6@36dr+kg6bdy_)b%-butyjzxv'
+
 MNEMONIC_KEY='XNL0uYFswE1ZY32yrF7VgRJBPLSA6g5a9mu0w8aLDPhcpOkH'
 RARIFY_API_KEY='1959b00b-435b-4c27-a1b7-66168414d0dc'
 TWITTER_API_KEY="dSnZQuCPMVQfCXGhhgWJ6qs8s"
