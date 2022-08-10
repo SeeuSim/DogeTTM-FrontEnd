@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
+import { Link } from 'preact-router/match';
 import * as URLCONF from "../../../../URLCONF.json";
 import style from "./style.css";
 
@@ -68,8 +69,7 @@ const Ranking: FunctionalComponent = () => {
                 <td>
                   <img class={style.TableImage} src={elem.artwork}></img>
                 </td>
-                {/* <td>{elem.address}</td> */}
-                <td>{elem.collection_name}</td>
+                <td><Link href={`/collections/${elem.address}`}>{elem.collection_name}</Link></td>
                 <td>{priceFormatter(elem.data)}</td>
               </tr>
             )
