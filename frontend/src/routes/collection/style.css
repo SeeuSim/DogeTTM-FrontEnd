@@ -7,9 +7,18 @@
   grid-template-columns: 1fr 1fr;
   grid-gap: 20px;
 
-  background: linear-gradient(180deg, #760CFD 0%, rgba(26, 141, 224, 0.55) 99.99%, rgba(24, 151, 222, 0) 100%);
+  /* background: linear-gradient(180deg, #760CFD 0%, rgba(26, 141, 224, 0.55) 99.99%, rgba(24, 151, 222, 0) 100%); */
 }
 
 .collection h1{
-  color: white;
+  color: black;
+}
+
+.artwork {
+  height: 500px;
+  width: 500px;
+}
+
+.collection-right{
+  background-color: white;
 }

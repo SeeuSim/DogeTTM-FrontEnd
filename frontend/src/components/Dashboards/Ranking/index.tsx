@@ -69,7 +69,9 @@ const Ranking: FunctionalComponent = () => {
                 <td>
                   <img class={style.TableImage} src={elem.artwork}></img>
                 </td>
-                <td><Link href={`/collections/${elem.address}`}>{elem.collection_name}</Link></td>
+                <td><Link href={`/collections/${elem.address}`}>{elem.collection_name
+                                                                  ? elem.collection_name
+                                                                  : "<Collection Name>"}</Link></td>
                 <td>{priceFormatter(elem.data)}</td>
               </tr>
             )

@@ -16,7 +16,7 @@ const App: FunctionalComponent = () => {
         <Route path="/" component={Home} />
         <Route path="/profile/" component={Profile} user="me" />
         <Route path="/profile/:user" component={Profile} />
-        <Route path="/collections/:address" component={Collection} />
+        <Route path="/collections/:contract_address" component={Collection}/>
         <NotFoundPage default />
       </Router>
     </div>
