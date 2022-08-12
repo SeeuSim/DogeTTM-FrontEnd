@@ -121,7 +121,9 @@ const Collection:FunctionalComponent<CollectionProps> = (props:CollectionProps) 
       <div class="collection-left">
         <img class={style.artwork} src={data?.artwork}></img>
         <h1><strong>Collection: </strong>{data?.name}</h1>
-        <h3><strong>Address: </strong><a href={`http://etherscan.io/address/${data?.address}`}>{data?.address}</a></h3>
+        <h3><strong>Address: </strong>
+          <a href={`http://etherscan.io/address/${data?.address}`}>{data?.address}</a>
+        </h3>
         <h4><strong>Owners: </strong>{data?.owners}</h4>
         <h4><strong>Total Minted: </strong>{data?.total_minted}</h4>
         <h4><strong>Total Burned: </strong>{data?.total_burned}</h4>
