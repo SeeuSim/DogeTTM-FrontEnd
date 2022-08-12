@@ -13,6 +13,6 @@ numpy
 nltk
 matplotlib
 keras
-tensorflow-macos
+tensorflow
 sklearn
 pandas

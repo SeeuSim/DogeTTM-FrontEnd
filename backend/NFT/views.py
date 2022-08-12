@@ -1,17 +1,19 @@
-from argparse import ArgumentError
-from os import stat
+from gc import collect
 from django.http import JsonResponse
 from . import models
 from . import mnemonic_query
+
 
 # Create your views here.
 def tokens_by_contract(request, contract_address:str):
     response = JsonResponse(mnemonic_query.contract_tokens(contract_address))
     return response
 
+
 def token_metadata(request, contract_address:str, token_id:str):
     return JsonResponse(mnemonic_query.token_metadata(contract_address,
                                                     token_id))
+
 
 def collection_price_history(request, contract_address:str, time_period:str,
                             grouping:str):
@@ -19,8 +21,10 @@ def collection_price_history(request, contract_address:str, time_period:str,
                                                     time_period,
                                                     grouping))
 
+
 def contract(request, contract_address:str):
     return JsonResponse(mnemonic_query.contract_tokens(contract_address))
+
 
 def collection_price_history_with_sentiment(request, contract_address:str,
                                             time_period:str, grouping:str):
@@ -28,6 +32,7 @@ def collection_price_history_with_sentiment(request, contract_address:str,
         .price_history_with_sentiment(contract_address,
                                     time_period,
                                     grouping))
+
 
 def dashboard_ranking(request, metric:str, time_period:str):
     """Returns the ranking dashboard data for the given metric and time period
@@ -108,6 +113,22 @@ def dashboard_ranking(request, metric:str, time_period:str):
 
     return JsonResponse({"data": out_list})
 
+
+def search_collections(request, search_field:str, param:str):
+    collection_lib = models.Collection.objects
+    search_cat_map = {
+        "name": collection_lib.filter(name__istartswith=param),
+        "address": collection_lib.filter(address__startswith=param)
+    }
+    return JsonResponse({
+        "data": list(map(lambda collection: {
+            "name": collection.name,
+            "address": collection.address,
+            "artwork": models.Asset.objects.get(parent_collection=collection).data
+        }, search_cat_map[search_field]))
+        })
+
+
 class CollectionView:
     @staticmethod
     def collection_page(request, contract_address:str):
@@ -154,3 +175,4 @@ class DataPointView:
             "tkn": datapoint.tkn,
             "vol": datapoint.vol
         }
+
