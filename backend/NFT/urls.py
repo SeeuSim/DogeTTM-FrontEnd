@@ -1,4 +1,3 @@
-from functools import cache
 from . import views
 from django.urls import path
 from django.views.decorators.cache import cache_page
@@ -15,5 +14,7 @@ urlpatterns = [
 
     path('dashboard_ranking/<metric>/<time_period>', cache_page(60)(views.dashboard_ranking), name="Dashboard Ranking"),
     path('collection/<contract_address>', cache_page(60)(views.CollectionView.collection_page), name="Collection Details"),
-    path('search/<search_field>/<param>', cache_page(60)(views.search_collections), name="Search for collections")
+    
+    # rather large number of possibilities, mem intensive to cache
+    path('search/<search_field>/<param>', views.search_collections, name="Search for collections")
 ]
