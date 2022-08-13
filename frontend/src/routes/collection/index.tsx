@@ -68,7 +68,6 @@ const Collection:FunctionalComponent<CollectionProps> = (props:CollectionProps) 
   }, []);
 
   useEffect(() => {
-    console.log('Hello');
     fetchData();
   }, []);
 

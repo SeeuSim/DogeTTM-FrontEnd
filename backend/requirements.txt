@@ -14,5 +14,6 @@ nltk
 matplotlib
 keras
 tensorflow
+#tensorflow-macos #for M1 Mac users
 sklearn
 pandas

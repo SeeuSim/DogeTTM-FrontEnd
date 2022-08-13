@@ -35,7 +35,7 @@ const Ranking: FunctionalComponent = () => {
   useEffect(
     () => {
       fetchData();
-    },[metric, timePeriod]
+    }, [metric, timePeriod]
   );
 
   const display = (tableData:Rank[]|undefined) => {

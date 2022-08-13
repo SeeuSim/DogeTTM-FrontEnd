@@ -1,4 +1,3 @@
-from gc import collect
 from django.http import JsonResponse
 from . import models
 from . import mnemonic_query
