@@ -2,3 +2,16 @@
     height: 56px;
     width: 56px;
 }
+
+#search-bar {
+    width: 30rem;
+}
+
+#results {
+    position: absolute;
+    width: 400px;
+    overflow-y: scroll;
+    overflow-x: scroll;
+    height: 20em;
+    /* border-bottom: 1px #eeeeee solid; */
+  }

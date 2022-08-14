@@ -128,6 +128,12 @@ def search_collections(request, search_field:str, param:str):
         })
 
 
+def searchbar(request):
+    return JsonResponse({"data": list(map(lambda collection: \
+        {"address": collection.address, "name": collection.name}, 
+        models.Collection.objects.all()))})
+
+
 class CollectionView:
     @staticmethod
     def collection_page(request, contract_address:str):

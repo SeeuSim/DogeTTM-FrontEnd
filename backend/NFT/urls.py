@@ -16,5 +16,6 @@ urlpatterns = [
     path('collection/<contract_address>', cache_page(60)(views.CollectionView.collection_page), name="Collection Details"),
     
     # rather large number of possibilities, mem intensive to cache
-    path('search/<search_field>/<param>', views.search_collections, name="Search for collections")
+    path('search/<search_field>/<param>', views.search_collections, name="Search for collections"),
+    path('search/_all', views.searchbar, name="Searchbar Suggestions")
 ]

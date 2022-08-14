@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Component, FunctionalComponent, h } from "preact";
+import { FunctionalComponent, h } from "preact";
 import { useCallback, useEffect, useState } from "preact/hooks";
 import * as URLCONFIG from "../../../URLCONF.json";
 import { Chart } from 'react-chartjs-2';
@@ -61,9 +61,7 @@ const Collection:FunctionalComponent<CollectionProps> = (props:CollectionProps) 
   const fetchData = useCallback(() => {
     axios.get<CollectionData>(`${baseURL}/nft/collection/${contract_address}`)
       .then((res) => {
-
         setData(res.data);
-        console.log(res.data);
       })
   }, []);
 

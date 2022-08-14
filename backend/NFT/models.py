@@ -79,6 +79,7 @@ class Collection(models.Model):
         volume = sales_volume_by_contract(self.address, "DURATION_7_DAYS", "GROUP_BY_PERIOD_1_DAY")['dataPoints']
         tokens = tokens_supply_by_contract(self.address, "DURATION_7_DAYS", "GROUP_BY_PERIOD_1_DAY")['dataPoints']
         for index, point in enumerate(prices):
+            print(point)
             self.__update_timeseries(point, "price")
             self.__update_timeseries(volume[index], "volume")
             self.__update_timeseries(tokens[index], "tokens")
@@ -91,7 +92,7 @@ class Collection(models.Model):
         volume = sales_volume_by_contract(address, "DURATION_7_DAYS", "GROUP_BY_PERIOD_1_DAY")['dataPoints']
         tokens = tokens_supply_by_contract(address, "DURATION_7_DAYS", "GROUP_BY_PERIOD_1_DAY")['dataPoints']
         collection = self
-
+        
         for index, point in enumerate(prices):
             epoch = format_date(point['timestamp'])
             dP = DataPoint.create(collection=collection, timestamp=epoch)
@@ -138,13 +139,12 @@ class Collection(models.Model):
             respective endpoints: Price History, Token Supply, Sales Volume
         - field: "price", "tokens", "volume"
         """
-        for point in data:
-            epoch = format_date(point['timestamp'])
-            if DataPoint.objects.filter(collection=self,timestamp=epoch).exists():
-                dP = DataPoint.objects.filter(collection=self,timestamp=epoch)[0]
-            else:
-                dP = DataPoint.create(collection=self, timestamp=epoch)
-            dP.update(point, field)
+        epoch = format_date(data['timestamp'])
+        if DataPoint.objects.filter(collection=self, timestamp=epoch).exists():
+            dP = DataPoint.objects.get(collection=self, timestamp=epoch)
+        else:
+            dP = DataPoint.create(collection=self, timestamp=epoch)
+        dP.update(data, field)
 
 
     def __str__(self):
@@ -201,6 +201,8 @@ class Asset(models.Model):
                 # Special Case for CRYPTOPUNKS: Double encoded with base64 and \
                 # then encoded svg with improper coded escape characters
                 return urlopen(f'data:{mime};base64,{data}').read().decode().replace("#", "%23")
+            elif "text" in mimeType:
+                return data
             return f'data:{mime};base64,{data}'
         else:
             self.type = self.URL
