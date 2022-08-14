@@ -178,10 +178,13 @@ Alternatively, you may reach out for the keys if needed.
 ```
 python manage.py makemigrations
 python manage.py migrate
-python manage.py createcachetable
+python manage.py createcachetable 
 python manage.py runjobs daily
 python manage.py runserver
 ```
+`cachetable` is to reate the cache in the database backend.
+Provided the `backend/backend/.env` is setup according to `SETUP.md`, 
+`runjobs daily` should populate the server with the API data to be served to the frontend.
 
 8) Change directory to `directory_name/frontend` and run the command:
 ```
