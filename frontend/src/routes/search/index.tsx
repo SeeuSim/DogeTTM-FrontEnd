@@ -20,7 +20,6 @@ const SearchResults: FunctionalComponent<SearchResultProps> = (props: SearchResu
         axios.get(`${baseURL}/nft/search/${metric}/${param}`).then(
             (response) => {
                 setResults(response.data);
-                console.log(response.data);
             }
         )
     }, [])

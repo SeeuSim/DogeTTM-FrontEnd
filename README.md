@@ -32,7 +32,7 @@ Note: NFT studio refers to the brand/creator of NFT tokens, an example of which 
 
 ## Tech Stack
 Front-End - Typescript with Preact <br />
-Back-End - Django, TensorFlow, Rarify API, Heroku
+Back-End - Django, TensorFlow, Mnemonic API, Heroku, PostgreSQL
 
 ## Motivation
 As a user who has heard about the NFT rise, who has heard about the USD$122 billion market size, who has witnessed a dozen friends making 6-figure profits from NFT trading, I am dying to find out what this is all about and how I can profit too.
@@ -178,6 +178,8 @@ Alternatively, you may reach out for the keys if needed.
 ```
 python manage.py makemigrations
 python manage.py migrate
+python manage.py createcachetable
+python manage.py runjobs daily
 python manage.py runserver
 ```
 
