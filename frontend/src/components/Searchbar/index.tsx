@@ -31,7 +31,7 @@ const Searchbar:FunctionalComponent = () => {
   useEffect(() => {
     fetchData();
   }, [])
-  
+
   // Handling user interactions
   const ulRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -53,7 +53,7 @@ const Searchbar:FunctionalComponent = () => {
   const onInputChange = (e: any) => {
     if (!e.target.value) {
       setDisplayOptions([]);
-    } else if (e.keyCode == 13){ 
+    } else if (e.keyCode == 13){
       setSearchParam(e.target.value);
       handleSubmit(e);
     } else {
@@ -85,7 +85,7 @@ const Searchbar:FunctionalComponent = () => {
   }
 
   const __route_to = (metric: string, param: string) => {
-    route(`/search/${metric}/${param}`)
+    route(`${metric}/${param}`)
   }
 
   return (
@@ -119,9 +119,8 @@ const Searchbar:FunctionalComponent = () => {
                     inputRef.current.value = searchBy == "name"
                       ? option.name
                       : option.address;
-                    searchBy == "name" 
-                      ? __route_to("name", option.name)
-                      : __route_to("address", option.address);
+                    searchBy == "name"
+                      __route_to("collections", option.address);
                   }
                 }}
                 >
