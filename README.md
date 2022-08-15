@@ -171,7 +171,8 @@ npm install
 ```
 to install any dependencies.
 
-6) Get the necessary API keys from <a>rarify.tech</a> and <a>developer.twitter.com</a> and populate the `directory_name/frontend/.env` file with the necessary details. </br>
+6) Get the necessary API keys from <a>rarify.tech</a>, <a>mnemonic.com</a> and <a>developer.twitter.com</a> and populate the `directory_name/frontend/.env` file with the necessary details. </br>
+Also populate the `backend/backend/.env` file as needed, as per `SETUP.md`.
 Alternatively, you may reach out for the keys if needed.
 
 7) Change directory to `directory_name/backend` and run these commands:
