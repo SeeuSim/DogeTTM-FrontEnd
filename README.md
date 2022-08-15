@@ -183,7 +183,7 @@ python manage.py createcachetable
 python manage.py runjobs daily
 python manage.py runserver
 ```
-`cachetable` is to reate the cache in the database backend.
+`cachetable` is to create the cache in the database backend.
 Provided the `backend/backend/.env` is setup according to `SETUP.md`, 
 `runjobs daily` should populate the server with the API data to be served to the frontend.
 
