@@ -11,7 +11,6 @@ from .mnemonic_query import (contract_details, contract_tokens, format_date,
 
 
 # Create your models here.
-# wip
 class Collection(models.Model):
     name = models.CharField(max_length=512)
     address = models.CharField(max_length=42, unique=True)
@@ -79,7 +78,7 @@ class Collection(models.Model):
         volume = sales_volume_by_contract(self.address, "DURATION_7_DAYS", "GROUP_BY_PERIOD_1_DAY")['dataPoints']
         tokens = tokens_supply_by_contract(self.address, "DURATION_7_DAYS", "GROUP_BY_PERIOD_1_DAY")['dataPoints']
         for index, point in enumerate(prices):
-            print(point)
+            # print(point)
             self.__update_timeseries(point, "price")
             self.__update_timeseries(volume[index], "volume")
             self.__update_timeseries(tokens[index], "tokens")
