@@ -1,22 +1,23 @@
 import os
 import datetime
+import json
+import collections
 import timedelta
+
 import requests
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import sentiment as stm
 import tensorflow as tf
-import json
-import collections
-import numpy as np
-import pandas as pd
+
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from keras.models import load_model
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import LSTM
+from tensorflow.keras.layers import Dense, LSTM
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 #from .dashboard import mnemonic_query as mq

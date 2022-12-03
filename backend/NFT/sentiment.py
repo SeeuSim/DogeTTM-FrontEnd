@@ -1,18 +1,20 @@
 from . import mnemonic_query
+
 import requests
 import os
 import datetime
 import timedelta
-import requests
+import json
+import collections
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+
 import numpy as np
 # import sentiment as stm
 import tensorflow as tf
-import json
-import collections
-import numpy as np
 import pandas as pd
+
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 
